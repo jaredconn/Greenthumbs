@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.provider.SyncStateContract;
 import android.support.v4.app.FragmentActivity;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
@@ -240,4 +242,4 @@ public class MainActivity extends Activity
 
     }
 
-} // end class
+}// end class
