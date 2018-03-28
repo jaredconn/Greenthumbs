@@ -26,7 +26,7 @@ public class MainActivity extends Activity
         implements GameBoardTouchListener
 {
 
-    static public final int NumSquaresOnGridSide = 20;
+    static public final int NumSquaresOnGridSide = 10;
     static public final int NumSquaresOnViewSide = 8;
     static public final int NumRedBlueTypes = 3;     // Used with simple squares demo; types: blank, red, blue
 
