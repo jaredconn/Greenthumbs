@@ -4,8 +4,10 @@ import java.util.Random;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.SyncStateContract;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentActivity;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -13,6 +15,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import android.support.v7.app.ActionBar;
@@ -144,7 +147,39 @@ public class MainActivity extends AppCompatActivity
 
         //end chris code add
 
+
+//handles button clicks inside of side drawer
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        mDrawerLayout.closeDrawers();
+
+                        switch (menuItem.getItemId()) {
+                            case R.id.notes:
+                                startActivity(new Intent(MainActivity.this, PlantNotes.class)); break;
+
+                           // case R.id.
+                        }
+                        // Add code here to update the UI based on the item selected
+                        // For example, swap UI fragments here
+
+                        return true;
+                    }
+                });
+
+
     }
+
+    @Override public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.side_drawer, menu);
+        return true;
+    }
+
 
     @Override public boolean onOptionsItemSelected (MenuItem item){
         switch (item.getItemId()) {
@@ -154,6 +189,8 @@ public class MainActivity extends AppCompatActivity
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     /**
      * Get 2-d grid of integers that indicate which bitmap is displayed at that point.
