@@ -28,6 +28,7 @@
         <activity
             android:name=".PlantNotes"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="adjustPan"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
 
     </application>
