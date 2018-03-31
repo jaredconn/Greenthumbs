@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.provider.SyncStateContract;
 import android.support.v4.app.FragmentActivity;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -272,4 +274,4 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-} // end class
+}// end class
