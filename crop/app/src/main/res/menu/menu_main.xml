@@ -7,4 +7,6 @@
         android:orderInCategory="100"
         android:title="@string/settings"
         app:showAsAction="never" />
+
+
 </menu>
