@@ -39,11 +39,11 @@ public class GameBoardView extends PanZoomView {
     private Rect  mDestRect;
     private RectF mDestRectF;
 
-    static private final int [] mUnselectedImageIds = {R.drawable.no_marker_default,
-            R.drawable.red_marker_default,
-            R.drawable.blue_marker_default};
+    static private final int [] mUnselectedImageIds = {R.drawable.eggplant_icon,
+            R.drawable.marijuana_icon,
+            R.drawable.carrots_icon};
     static private final int [] mSelectedImageIds = {R.drawable.no_marker_highlighted,
-            R.drawable.red_marker_highlighted,
+            R.drawable.marijuana_highlighted,
             R.drawable.blue_marker_highlighted};
 
     private Bitmap [] mBitmaps;              // WATCH OUT! Do not set this variable to null.

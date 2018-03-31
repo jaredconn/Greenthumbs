@@ -2,13 +2,21 @@ package com.example.j.crop;
 
 import java.util.Random;
 
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.provider.SyncStateContract;
 import android.support.v4.app.FragmentActivity;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
+
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 
 /**
  * This activity displays a grid of image squares that represent a game board.
@@ -24,14 +32,15 @@ import android.util.Log;
  * https://blahti.wordpress.com/2015/11/05/android-zoomable-game-board/
  */
 
-public class MainActivity extends Activity
+public class MainActivity extends AppCompatActivity
         implements GameBoardTouchListener
 {
 
-    static public final int NumSquaresOnGridSide = 20;
+    static public final int NumSquaresOnGridSide = 10;
     static public final int NumSquaresOnViewSide = 8;
     static public final int NumRedBlueTypes = 3;     // Used with simple squares demo; types: blank, red, blue
 
+    private DrawerLayout mDrawerLayout;
 
     static private Random mRandomObject = new Random (System.currentTimeMillis ());
 
@@ -109,18 +118,41 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setupMyGrid (NumSquaresOnGridSide);
+        setupMyGrid(NumSquaresOnGridSide);
 
-        GameBoardView gv = (GameBoardView) findViewById (R.id.boardview);
+        GameBoardView gv = (GameBoardView) findViewById(R.id.boardview);
         if (gv != null) {
-            setGridView (gv);
+            setGridView(gv);
 
-            gv.setNumSquaresAlongCanvas (NumSquaresOnGridSide);
-            gv.setNumSquaresAlongSide (NumSquaresOnViewSide);
-            gv.updateGrid (getGrid ());
-            gv.setTouchListener (this);
+            gv.setNumSquaresAlongCanvas(NumSquaresOnGridSide);
+            gv.setNumSquaresAlongSide(NumSquaresOnViewSide);
+            gv.updateGrid(getGrid());
+            gv.setTouchListener(this);
         }
 
+
+        //chris added code below
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+
+
+        //end chris code add
+
+    }
+
+    @Override public boolean onOptionsItemSelected (MenuItem item){
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
