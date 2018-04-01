@@ -66,17 +66,7 @@ public class MainActivity extends AppCompatActivity
         return pGrid;
     } // end getGrid
 
-    /**
-     * Set the value of the Grid property.
-     *
-     * @param newValue int [][]
-     */
 
-    public void setGrid (int [][] newValue)
-    {
-        pGrid = newValue;
-    } // end setGrid
-/* end Property Grid */
 
 /* Property GridView */
     /**
@@ -124,7 +114,9 @@ public class MainActivity extends AppCompatActivity
         setupMyGrid(NumSquaresOnGridSide);
 
         GameBoardView gv = (GameBoardView) findViewById(R.id.boardview);
+
         if (gv != null) {
+
             setGridView(gv);
 
             gv.setNumSquaresAlongCanvas(NumSquaresOnGridSide);
@@ -175,6 +167,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    //side drawer buttons
     @Override public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.side_drawer, menu);
         return true;
@@ -193,11 +186,15 @@ public class MainActivity extends AppCompatActivity
 
 
     /**
+     *
+     *
      * Get 2-d grid of integers that indicate which bitmap is displayed at that point.
      *
      * @param n int - grid size is N x N squares
      * @return int [] []
+     *
      */
+
 
     int [] [] randomGridArray (int n) {
         // Set up with red, blue, and gray squares
@@ -238,6 +235,18 @@ public class MainActivity extends AppCompatActivity
         int [][] grid = randomGridArray (n);
         setGrid (grid);
     }
+
+    /**
+     * Set the value of the Grid property.
+     *
+     * @param newValue int [][]
+     */
+
+    public void setGrid (int [][] newValue)
+    {
+        pGrid = newValue;
+    } // end setGrid
+/* end Property Grid */
 
 /**
  */
