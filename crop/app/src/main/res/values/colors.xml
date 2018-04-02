@@ -9,4 +9,5 @@
     <color name="grid_background">#3e6b4c</color>
     <color name="background">#111100</color>
     <color name="debug_background">#224466</color>
+    <color name="et_background">#e6ebf4</color>
 </resources>

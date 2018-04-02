@@ -1,36 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<HorizontalScrollView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/horizontalScrollView">
-
-    <ImageView
-        android:id="@+id/sample"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="54dp"
-        android:src="@drawable/sample" />
-
-</HorizontalScrollView>
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <TextView
+        android:id="@+id/tv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content" />
+
+    <HorizontalScrollView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/horizontalScrollView"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/sample"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="54dp"
+            android:src="@drawable/sample" />
+
+    </HorizontalScrollView>
+
+    <Button
+        android:id="@+id/uploadPhoto"
+        android:background="@drawable/camera_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@id/horizontalScrollView"
+        android:layout_weight="1.0"
+        />
+
+    <ScrollView
+        android:id="@+id/SCROLLER_ID"
+        android:layout_width="fill_parent"
+        android:layout_height="350dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:text="This will query the DB for notes and images of the selected plant" />
+        android:layout_below="@+id/horizontalScrollView"
+        android:layout_marginTop="21dp"
+        android:fillViewport="true"
+        android:scrollbars="vertical">
+
+        <TextView
+            android:id="@+id/notes"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/horizontalScrollView"
+            android:layout_weight="1.0"
+            android:text="This class will query the DB for notes and images of the selected plant. The images will appear in a horizontal scrolling view with time and date stamps. The notes will be displayed in a vertically scrolling view and a time and date stamp will be prepended to each entry. The rest of the dots are to show the scrolling feature .................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************" />
+
+    </ScrollView>
 
     <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+       android:layout_alignBottom="@id/SCROLLER_ID"
+        android:background="@color/et_background"
+        android:inputType="text|textMultiLine"
+        android:text="enter text here..." />
+
+    <Button
+        android:id="@+id/upload"
+        android:text="Upload journal entry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/horizontalScrollView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="43dp"
-        android:text="enter text here..." />
+        android:layout_alignParentBottom="true"/>
+
 
 </RelativeLayout>
