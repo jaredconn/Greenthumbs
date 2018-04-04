@@ -6,11 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import com.example.j.crop.AppDatabase;
 
 /**
  * Created by J on 3/30/2018.
@@ -18,7 +19,8 @@ import java.util.Locale;
 
 public class PlantNotes extends AppCompatActivity {
 
-
+    private AppDatabase mDb;
+    private TextView notes;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +40,8 @@ public class PlantNotes extends AppCompatActivity {
 
 
         final EditText et = (EditText) findViewById(R.id.editText);
-
+        //display the notes from Database
+        notes = findViewById(R.id.notes);
 
     }
 }

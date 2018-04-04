@@ -4,7 +4,7 @@ package com.example.j.crop;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.graphics.Bitmap;
+/**import android.graphics.Bitmap;*/
 
 /**
  * http://www.androiddeft.com/2017/05/06/android-storing-data-using-sqlite-database/
