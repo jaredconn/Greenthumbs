@@ -3,26 +3,38 @@ package com.example.j.crop;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
+
+import com.example.j.crop.Plant;
+import com.example.j.crop.DatabaseFunctions;
 
 /**
  * Created by lhn41 on 4/2/2018.
  */
-@Database(entities = {Plant.class}, version = 1)
+@Database(entities = {Plant.class, Note.class}, version = 1)
+@TypeConverters({DateRoomConverter.class})
 public abstract class AppDatabase extends RoomDatabase{
-    private static Builder<AppDatabase> INSTANCE;
     public abstract DatabaseFunctions databaseFunc();
 
-    public static Builder<AppDatabase> getAppDatabase(Context context){
-        if(INSTANCE == null){
-            INSTANCE = Room.databaseBuilder(context.getApplicationContext(),AppDatabase.class, "plant-database");
-
+    private static AppDatabase plantDB;
+    // synchronized is use to avoid concurrent access in multithred environment
+    public static /*synchronized*/ AppDatabase getInstance(Context context) {
+        if (null == plantDB) {
+            plantDB = buildDatabaseInstance(context);
         }
-        return INSTANCE;
+        return plantDB;
     }
 
-    public static void destoryInstance(){
-        INSTANCE = null;
+
+    private static AppDatabase buildDatabaseInstance(Context context) {
+        return Room.databaseBuilder(context,
+                AppDatabase.class,
+                "plantdb.db").allowMainThreadQueries().build();
     }
 
+
+    public  void cleanUp(){
+        plantDB = null;
+    }
 }
