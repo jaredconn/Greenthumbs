@@ -1,6 +1,9 @@
 package com.example.j.crop;
 
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.graphics.Bitmap;
 
 /**
@@ -8,14 +11,18 @@ import android.graphics.Bitmap;
  * Bases on the link above.
  * Created by lhn41 on 3/28/2018.
  */
-
+@Entity(tableName = "plant")
 public class Plant
 {
-    private String plantName;
-    private String plantStrain;
-    private Bitmap plantPic;
-    private String plantNotes;
+    @PrimaryKey(autoGenerate = true)
     private int plantID;
+
+    @ColumnInfo(name = "plantName")
+    private String plantName;
+
+    /*private String plantStrain;
+    private Bitmap plantPic;
+    private String plantNotes;*/
 
     public void setPlantID(int id)
     {
@@ -27,7 +34,7 @@ public class Plant
         plantName = name;
     }
 
-    public void setPlantPic(Bitmap pic)
+    /*public void setPlantPic(Bitmap pic)
     {
         plantPic = pic;
     }
@@ -40,7 +47,7 @@ public class Plant
     public void setPlantNotes(String notes)
     {
         plantNotes = notes;
-    }
+    }*/
 
     public int getPlantID()
     {
@@ -52,18 +59,18 @@ public class Plant
         return plantName;
     }
 
-    public String getPlantStrain()
+    /*public String getPlantStrain()
     {
         return plantStrain;
-    }
+    }*/
 
-    public String getPlantNotes()
+    /*public String getPlantNotes()
     {
         return plantNotes;
-    }
+    }*/
 
-    public Bitmap getPlantPic()
+    /*public Bitmap getPlantPic()
     {
         return plantPic;
-    }
+    }*/
 }
