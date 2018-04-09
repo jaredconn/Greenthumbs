@@ -15,14 +15,14 @@ import com.example.j.crop.DatabaseFunctions;
 @Database(entities = {Plant.class, Note.class}, version = 1)
 @TypeConverters({DateRoomConverter.class})
 public abstract class AppDatabase extends RoomDatabase{
+
     public abstract DatabaseFunctions databaseFunc();
 
-    private static AppDatabase plantDB;
+private static AppDatabase plantDB;
     // synchronized is use to avoid concurrent access in multithred environment
     public static /*synchronized*/ AppDatabase getInstance(Context context) {
         if (null == plantDB) {
-            plantDB = buildDatabaseInstance(context);
-        }
+            plantDB = buildDatabaseInstance(context);        }
         return plantDB;
     }
 

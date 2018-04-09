@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,7 +37,8 @@ import com.example.j.crop.AppDatabase;
 
 public class PlantNotes extends AppCompatActivity {
 
-
+    private AppDatabase mDb;
+    private TextView notes;
     // private TextView notes;
 
 
