@@ -20,7 +20,6 @@ public interface DatabaseFunctions {
     List<Note> getNotes();
 
     @Insert
-
     @Insert
     long insertNote(Note notes);
 
