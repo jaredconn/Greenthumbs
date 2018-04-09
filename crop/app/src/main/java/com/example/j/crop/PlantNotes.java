@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 
 import java.lang.ref.WeakReference;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,8 +39,8 @@ import com.example.j.crop.AppDatabase;
 
 public class PlantNotes extends AppCompatActivity {
 
-
     // private TextView notes;
+
 
 
     @Override

@@ -17,12 +17,9 @@ import com.example.j.crop.DatabaseFunctions;
 public abstract class AppDatabase extends RoomDatabase{
     public abstract DatabaseFunctions databaseFunc();
 
-    private static AppDatabase plantDB;
-    // synchronized is use to avoid concurrent access in multithred environment
+    private static AppDatabase plantDB;    // synchronized is use to avoid concurrent access in multithred environment
     public static /*synchronized*/ AppDatabase getInstance(Context context) {
         if (null == plantDB) {
-            plantDB = buildDatabaseInstance(context);
-        }
         return plantDB;
     }
 
