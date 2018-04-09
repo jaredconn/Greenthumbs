@@ -19,15 +19,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-
-import java.lang.ref.WeakReference;
-
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import com.example.j.crop.AppDatabase;
@@ -42,8 +35,7 @@ public class PlantNotes extends AppCompatActivity {
     // private TextView notes;
 
 
-
-    @Override
+   @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
