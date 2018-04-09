@@ -38,6 +38,8 @@ import android.support.v7.widget.Toolbar;
 public class MainActivity extends AppCompatActivity
         implements GameBoardTouchListener
 {
+    private int selected_x = 0;
+    private int selected_y = 0;
 
     static public final int NumSquaresOnGridSide = 10;
     static public final int NumSquaresOnViewSide = 8;
@@ -283,7 +285,9 @@ public class MainActivity extends AppCompatActivity
         boolean isSelected = gv.isSelected (upX, upY);
         gv.clearSelections ();
         if (!isSelected) gv.toggleSelection (upX, upY);
-        gv.invalidate ();
+        selected_x = upX;
+        selected_y = upY;
+        gv.invalidate();
 
         if (AppConfig.DEBUG)
             Log.d (Constants.LOG_NAME, "onTouchUp x: " + upX + " y: " + upY + " selected: " + isSelected);
@@ -308,12 +312,21 @@ public class MainActivity extends AppCompatActivity
     public void onLongTouchUp (int downX, int downY, int upX, int upY) {
         GameBoardView gv = getGridView ();
         if (gv == null) return;
-
+        /*
         int oldValue = gv.gridValue (upX, upY);
         int newValue = oldValue + 1;
         if (newValue >= NumRedBlueTypes) newValue = 0;
         gv.setGridValue (upX, upY, newValue);
         gv.invalidate ();
+        */
+
+        int oldValue = gv.gridValue (upX, upY);
+        int newValue = gv.gridValue(selected_x, selected_y);
+        gv.setGridValue(upX, upY, newValue);
+        gv.setGridValue(selected_x, selected_y, oldValue);
+        gv.invalidate();
+        gv.clearSelections();
+
 
         if (AppConfig.DEBUG)
             Log.d (Constants.LOG_NAME, "onLongTouchUp x: " + upX + " y: " + upY + " old value: " + oldValue);
