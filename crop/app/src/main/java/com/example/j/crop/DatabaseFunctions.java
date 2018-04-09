@@ -20,6 +20,8 @@ public interface DatabaseFunctions {
     List<Note> getNotes();
 
     @Insert
+    void insertPlant(Plant plant);
+
     @Insert
     long insertNote(Note notes);
 
