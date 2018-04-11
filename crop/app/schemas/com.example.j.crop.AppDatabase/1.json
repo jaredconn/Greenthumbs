@@ -2,28 +2,34 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "10b699b55995e92c0c62fb919e29471b",
+    "identityHash": "1eea1656620e446844c401d12ec79ea4",
     "entities": [
       {
         "tableName": "plant",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plantID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `plantName` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plant_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `plantName` TEXT, `note_id` INTEGER NOT NULL)",
         "fields": [
           {
-            "fieldPath": "plantID",
-            "columnName": "plantID",
+            "fieldPath": "plant_id",
+            "columnName": "plant_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "plantName",
+            "fieldPath": "plant_name",
             "columnName": "plantName",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "note_id",
+            "columnName": "note_id",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "plantID"
+            "plant_id"
           ],
           "autoGenerate": true
         },
@@ -32,7 +38,7 @@
       },
       {
         "tableName": "notes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`note_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `note_content` TEXT, `title` TEXT, `date` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`note_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `note_content` TEXT, `title` TEXT, `date` INTEGER, `plant_id` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "note_id",
@@ -57,6 +63,12 @@
             "columnName": "date",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "plant_id",
+            "columnName": "plant_id",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -67,11 +79,61 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "plant_join_note",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plant_id` INTEGER NOT NULL, `note_id` INTEGER NOT NULL, PRIMARY KEY(`plant_id`, `note_id`), FOREIGN KEY(`plant_id`) REFERENCES `plant`(`plant_id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`note_id`) REFERENCES `notes`(`note_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "plant_id",
+            "columnName": "plant_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note_id",
+            "columnName": "note_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "plant_id",
+            "note_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "plant",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "plant_id"
+            ],
+            "referencedColumns": [
+              "plant_id"
+            ]
+          },
+          {
+            "table": "notes",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "note_id"
+            ],
+            "referencedColumns": [
+              "note_id"
+            ]
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"10b699b55995e92c0c62fb919e29471b\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"1eea1656620e446844c401d12ec79ea4\")"
     ]
   }
 }

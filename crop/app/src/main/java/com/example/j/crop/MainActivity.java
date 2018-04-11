@@ -244,6 +244,7 @@ public class MainActivity extends AppCompatActivity
 
     public void setGrid (int [][] newValue)
     {
+     //TODO
         pGrid = newValue;
     } // end setGrid
 /* end Property Grid */

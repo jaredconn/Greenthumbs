@@ -213,6 +213,7 @@ public class GameBoardView extends PanZoomView {
      */
 
     public void drawOnCanvas (Canvas canvas) {
+        //TODO create a plant in plant table for each plant
 
         float fx, fy;
 

@@ -15,23 +15,25 @@ import android.arch.persistence.room.PrimaryKey;
 public class Plant
 {
     @PrimaryKey(autoGenerate = true)
-    private int plantID;
+    private int plant_id;
 
     @ColumnInfo(name = "plantName")
-    private String plantName;
+    private String plant_name;
+
+    private int note_id;
 
     /*private String plantStrain;
     private Bitmap plantPic;
     private String plantNotes;*/
 
-    public void setPlantID(int id)
+    public void setPlant_id(int id)
     {
-        plantID = id;
+        plant_id = id;
     }
 
-    public void setPlantName(String name)
+    public void setPlant_name(String name)
     {
-        plantName = name;
+        plant_name = name;
     }
 
     /*public void setPlantPic(Bitmap pic)
@@ -49,14 +51,22 @@ public class Plant
         plantNotes = notes;
     }*/
 
-    public int getPlantID()
+    public int getPlant_id()
     {
-        return plantID;
+        return plant_id;
     }
 
-    public String getPlantName()
+    public String getPlant_name()
     {
-        return plantName;
+        return plant_name;
+    }
+
+    public int getNote_id() {
+        return note_id;
+    }
+
+    public void setNote_id(int note_id) {
+        this.note_id = note_id;
     }
 
     /*public String getPlantStrain()
