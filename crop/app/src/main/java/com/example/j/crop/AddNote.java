@@ -83,7 +83,7 @@ public class AddNote extends AppCompatActivity {
         finish();
     }
 
-private static class InsertTask extends AsyncTask<Void, Void, Boolean> {
+static class InsertTask extends AsyncTask<Void, Void, Boolean> {
 
     private WeakReference<AddNote> activityReference;
     private Note note;

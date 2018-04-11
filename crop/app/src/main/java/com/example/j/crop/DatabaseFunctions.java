@@ -20,7 +20,7 @@ public interface DatabaseFunctions {
     List<Note> getNotes();
 
     @Insert
-    void insertPlant(Plant plant);
+    long insertPlant(Plant plant);
 
     @Insert
     long insertNote(Note notes);
@@ -33,4 +33,7 @@ public interface DatabaseFunctions {
 
     @Delete
     void delete(Plant plant);
+
+    @Query("SELECT * FROM notes INNER JOIN plant_join_note ON notes.note_id=plant_join_note.note_id WHERE plant_join_note.plant_id=:plant_id")
+    List<Note> getNotesForPlant(final long plant_id);
 }

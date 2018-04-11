@@ -4,6 +4,8 @@ package com.example.j.crop;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+
+import java.io.Serializable;
 /**import android.graphics.Bitmap;*/
 
 /**
@@ -12,65 +14,42 @@ import android.arch.persistence.room.PrimaryKey;
  * Created by lhn41 on 3/28/2018.
  */
 @Entity(tableName = "plant")
-public class Plant
+public class Plant implements Serializable
 {
     @PrimaryKey(autoGenerate = true)
-    private int plantID;
+    private long plant_id;
 
     @ColumnInfo(name = "plantName")
-    private String plantName;
+    private String plant_name;
 
-    /*private String plantStrain;
-    private Bitmap plantPic;
-    private String plantNotes;*/
+    private long note_id;
 
-    public void setPlantID(int id)
+    public void setPlant_id(long id)
     {
-        plantID = id;
+        plant_id = id;
     }
 
-    public void setPlantName(String name)
+    public void setPlant_name(String name)
     {
-        plantName = name;
+        plant_name = name;
     }
 
-    /*public void setPlantPic(Bitmap pic)
+    public long getPlant_id()
     {
-        plantPic = pic;
+        return plant_id;
     }
 
-    public void setPlantStrain(String strain)
+    public String getPlant_name()
     {
-        plantStrain = strain;
+        return plant_name;
     }
 
-    public void setPlantNotes(String notes)
-    {
-        plantNotes = notes;
-    }*/
-
-    public int getPlantID()
-    {
-        return plantID;
+    public long getNote_id() {
+        return note_id;
     }
 
-    public String getPlantName()
-    {
-        return plantName;
+    public void setNote_id(long note_id) {
+        this.note_id = note_id;
     }
 
-    /*public String getPlantStrain()
-    {
-        return plantStrain;
-    }*/
-
-    /*public String getPlantNotes()
-    {
-        return plantNotes;
-    }*/
-
-    /*public Bitmap getPlantPic()
-    {
-        return plantPic;
-    }*/
 }

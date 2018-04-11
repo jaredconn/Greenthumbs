@@ -46,6 +46,7 @@ public class PlantNotes extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PlantNotes.this, AddNoteActivity.class);
+                //intent.putExtra("plant_id",
                 //TODO intent.putExtra("plantID", value) and then query for that plant's notes
                 startActivity(intent);
             }

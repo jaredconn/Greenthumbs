@@ -63,10 +63,12 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
             activityReference = new WeakReference<>(context);
         }
 
+
+        //todo getNotesForPlant(long plant_id) ...get the specified notes for selected plant
         @Override
         protected List<Note> doInBackground(Void... voids) {
             if (activityReference.get()!=null)
-                return activityReference.get().noteDatabase.databaseFunc().getNotes();
+                return activityReference.get().noteDatabase.databaseFunc().getNotesForPlant(1284);
             else
                 return null;
         }
