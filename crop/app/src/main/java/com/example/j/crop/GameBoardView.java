@@ -1,6 +1,7 @@
 package com.example.j.crop;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -17,6 +18,8 @@ import android.util.Log;
  */
 
 public class GameBoardView extends PanZoomView {
+
+    private Plant plant;
 
 
     static public final int DefaultNumSquaresAlongSide = 9;
@@ -213,6 +216,7 @@ public class GameBoardView extends PanZoomView {
      */
 
     public void drawOnCanvas (Canvas canvas) {
+        //TODO create a plant in plant table for each plant
 
         float fx, fy;
 
@@ -238,6 +242,9 @@ public class GameBoardView extends PanZoomView {
                         : bitmaps [bindex];
                 dest1.offsetTo (dx, dy);
                 canvas.drawBitmap (b1, null, dest1, paint);
+                //todo think it goes here... -nope, does not go here.
+
+
 
                 if (AppConfig.DEBUG)
                     if (j == 9) {
@@ -341,7 +348,13 @@ public class GameBoardView extends PanZoomView {
         int iy = y - 1;
         if ((ix < 0) || (ix >= pNumSquaresAlongCanvas)) return false;
         if ((iy < 0) || (iy >= pNumSquaresAlongCanvas)) return false;
+/*
+        else{
+            plant.getPlant_id()
+        }
+        */
         return (mGridSelect [iy] [ix] > 0);
+
     } // end gridValue
 
     /**
@@ -595,6 +608,7 @@ public class GameBoardView extends PanZoomView {
         if ((ix < 0) || (ix >= pNumSquaresAlongCanvas)) return;
         if ((iy < 0) || (iy >= pNumSquaresAlongCanvas)) return;
         mGrid [iy][ix] = value;
+
     }
 
     /**
@@ -727,6 +741,14 @@ public class GameBoardView extends PanZoomView {
         for (int y = 0; y < pNumSquaresAlongCanvas; y++) {
             for (int x = 0; x < pNumSquaresAlongCanvas; x++) {
                 mGrid [y][x] = grid [y][x];
+
+
+                //AddPlant plant = new AddPlant();
+                Intent intent = new Intent(getContext(), AddPlant.class);
+                //TODO intent.putExtra("plantID", value) and then query for that plant's notes
+                mContext.startActivity(intent);
+
+
             }
         }
     }

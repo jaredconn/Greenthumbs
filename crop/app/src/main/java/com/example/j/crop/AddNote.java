@@ -40,21 +40,18 @@ public class AddNote extends AppCompatActivity {
 
     plantDatabase = AppDatabase.getInstance(AddNote.this);
 
-    final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "notedb.db").build();
+    final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "plantdb.db").build();
 
 
     Button button = findViewById(R.id.but_save);
 
-        if ( (note = (Note) getIntent().getSerializableExtra("note"))!=null ){
-        getSupportActionBar().setTitle("Update Note");
-        update = true;
-        button.setText("Update");
-        et_title.setText(note.getTitle());
-        et_content.setText(note.getContent());
-    }
-
-
-    //AppDatabase.databaseFunc().updateNote(note);
+        if ( (note = (Note) getIntent().getSerializableExtra("note"))!=null ) {
+            getSupportActionBar().setTitle("Update Note");
+            update = true;
+            button.setText("Update");
+            et_title.setText(note.getTitle());
+            et_content.setText(note.getContent());
+        }
 
     //upload note
         button.setOnClickListener(new View.OnClickListener() {
@@ -64,35 +61,29 @@ public class AddNote extends AppCompatActivity {
             if (update) {
                 note.setContent(et_content.getText().toString());
                 note.setTitle(et_title.getText().toString());
-                db.databaseFunc().updateNote(note);
+
+                Thread thread = new Thread(new Runnable() {
+                    public void run()
+                    {
+                        // code goes here.
+                        db.databaseFunc().updateNote(note);
+                    }});
+                thread.start();
+
                 setResult(note,2);
             } else {
                 note = new Note(et_content.getText().toString(), et_title.getText().toString());
                 new InsertTask(AddNote.this, note).execute();
             }
         }});
-
-
-/*
-        final EditText et = (EditText) findViewById(R.id.editText);
-        //display the notes from Database
-        notes = findViewById(R.id.notes);
-        */
-
-
 }
-
 
     private void setResult(Note note, int flag){
         setResult(flag,new Intent().putExtra("note",note));
         finish();
     }
 
-//display the notes from Database
-// notes = findViewById(R.id.notes);
-
-
-private static class InsertTask extends AsyncTask<Void, Void, Boolean> {
+static class InsertTask extends AsyncTask<Void, Void, Boolean> {
 
     private WeakReference<AddNote> activityReference;
     private Note note;
@@ -122,5 +113,3 @@ private static class InsertTask extends AsyncTask<Void, Void, Boolean> {
     }
 }
 }
-
-

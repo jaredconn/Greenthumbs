@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity
         implements GameBoardTouchListener
 {
 
-    static public final int NumSquaresOnGridSide = 10;
+    static public final int NumSquaresOnGridSide = 4;
     static public final int NumSquaresOnViewSide = 8;
     static public final int NumRedBlueTypes = 3;     // Used with simple squares demo; types: blank, red, blue
 
@@ -244,6 +244,7 @@ public class MainActivity extends AppCompatActivity
 
     public void setGrid (int [][] newValue)
     {
+     //TODO
         pGrid = newValue;
     } // end setGrid
 /* end Property Grid */
