@@ -40,13 +40,24 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
     private NotesAdapter notesAdapter;
     private int pos;
 
+    private static int x;
+    private static int y;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notes_recycler);
+
+        Bundle intent = getIntent().getExtras();
+        x = intent.getInt("plant_x");
+        y = intent.getInt("plant_y");
+
         initializeVies();
         displayList();
+
+
+
     }
 
     private void displayList(){
@@ -68,7 +79,7 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
         @Override
         protected List<Note> doInBackground(Void... voids) {
             if (activityReference.get()!=null)
-                return activityReference.get().noteDatabase.databaseFunc().getNotesForPlant(1284);
+                return activityReference.get().noteDatabase.databaseFunc().getNotesForPlant(activityReference.get().noteDatabase.databaseFunc().getPlantId(x,y));
             else
                 return null;
         }

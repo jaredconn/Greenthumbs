@@ -29,7 +29,8 @@ public class Note implements Serializable{
 
     private Date date;
 
-    private int plant_id;
+    private long plant_id;
+
 
 //    public Note(int note_id, String content, String title, Date date) {
 //        this.note_id = note_id;
@@ -79,13 +80,6 @@ public class Note implements Serializable{
         this.title = title;
     }
 
-    public int getPlant_id() {
-        return plant_id;
-    }
-
-    public void setPlant_id(int plant_id) {
-        this.plant_id = plant_id;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -118,4 +112,11 @@ public class Note implements Serializable{
     }
 
 
+    public long getPlant_id() {
+        return plant_id;
+    }
+
+    public void setPlant_id(long plant_id) {
+        this.plant_id = plant_id;
+    }
 }

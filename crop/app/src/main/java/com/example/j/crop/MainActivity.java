@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity
      */
 
     private int [][] pGrid;
+    private int x;
+    private int y;
 
     /**
      * Get the value of the Grid property.
@@ -153,7 +155,13 @@ public class MainActivity extends AppCompatActivity
 
                         switch (menuItem.getItemId()) {
                             case R.id.notes:
-                                startActivity(new Intent(MainActivity.this, PlantNotes.class)); break;
+
+                                Intent intent = new Intent(MainActivity.this, PlantNotes.class);
+
+                                intent.putExtra("plant_x", x);
+                                intent.putExtra("plant_y", y);
+
+                                startActivity(intent); break;
 
                            // case R.id.
                         }
@@ -167,6 +175,13 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private int getX() {
+        return this.x;
+    }
+
+    private int getY() {
+        return this.y;
+    }
     //side drawer buttons
     @Override public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.side_drawer, menu);
@@ -244,7 +259,6 @@ public class MainActivity extends AppCompatActivity
 
     public void setGrid (int [][] newValue)
     {
-     //TODO
         pGrid = newValue;
     } // end setGrid
 /* end Property Grid */
@@ -286,9 +300,16 @@ public class MainActivity extends AppCompatActivity
         if (!isSelected) gv.toggleSelection (upX, upY);
         gv.invalidate ();
 
-        if (AppConfig.DEBUG)
-            Log.d (Constants.LOG_NAME, "onTouchUp x: " + upX + " y: " + upY + " selected: " + isSelected);
+        setXY(upX, upY);
 
+       // if (AppConfig.DEBUG)
+           // Log.e (Constants.LOG_NAME, "onTouchUp x: " + upX + " y: " + upY + " selected: " + isSelected);
+
+    }
+
+    private void setXY(int upX, int upY) {
+        this.x = upX;
+        this.y = upY;
     }
 
     /**

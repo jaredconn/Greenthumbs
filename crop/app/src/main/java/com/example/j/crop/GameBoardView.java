@@ -344,6 +344,11 @@ public class GameBoardView extends PanZoomView {
 
     public boolean isSelected (int x, int y)
     {
+
+
+
+      //  Log.e("LOCATION SELECTED", String.valueOf(x));
+
         int ix = x - 1;
         int iy = y - 1;
         if ((ix < 0) || (ix >= pNumSquaresAlongCanvas)) return false;
@@ -745,7 +750,10 @@ public class GameBoardView extends PanZoomView {
 
                 //AddPlant plant = new AddPlant();
                 Intent intent = new Intent(getContext(), AddPlant.class);
-                //TODO intent.putExtra("plantID", value) and then query for that plant's notes
+
+                intent.putExtra("plant_x", x);
+                intent.putExtra("plant_y", y);
+
                 mContext.startActivity(intent);
 
 

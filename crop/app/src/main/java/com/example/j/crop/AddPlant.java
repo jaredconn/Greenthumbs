@@ -39,6 +39,14 @@ public class AddPlant extends AppCompatActivity {
 
 
         plant = new Plant();
+        int x,y;
+        Bundle intent = getIntent().getExtras();
+        x = intent.getInt("plant_x");
+        y = intent.getInt("plant_y");
+
+        plant.setX(x);
+        plant.setY(y);
+
         new AddPlant.InsertTask(AddPlant.this, plant).execute();
 
     }
