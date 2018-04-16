@@ -3,14 +3,10 @@ package com.example.j.crop;
 import java.util.Random;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentActivity;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +16,7 @@ import android.view.MenuItem;
 
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 /**
  * This activity displays a grid of image squares that represent a game board.
@@ -40,6 +37,18 @@ public class MainActivity extends AppCompatActivity
 {
     private int selected_x = 0;
     private int selected_y = 0;
+    private int first_x = 0;
+    private int first_y = 0;
+    private int firstValue = 0;
+
+    FloatingActionButton fab_swap;
+    FloatingActionButton fab_clear;
+
+
+
+
+
+    private boolean edit_flag = false;
 
     static public final int NumSquaresOnGridSide = 10;
     static public final int NumSquaresOnViewSide = 8;
@@ -113,7 +122,14 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setupMyGrid(NumSquaresOnGridSide);
+        //chris work
+        int[] dimensions = getIntent().getIntArrayExtra("DIMENSIONS");
+
+        //end chris work
+
+
+        //setupMyGrid(NumSquaresOnGridSide);
+        setupMyGrid(dimensions[0]);
 
         GameBoardView gv = (GameBoardView) findViewById(R.id.boardview);
 
@@ -121,8 +137,11 @@ public class MainActivity extends AppCompatActivity
 
             setGridView(gv);
 
-            gv.setNumSquaresAlongCanvas(NumSquaresOnGridSide);
-            gv.setNumSquaresAlongSide(NumSquaresOnViewSide);
+            //gv.setNumSquaresAlongCanvas(NumSquaresOnGridSide);
+            //gv.setNumSquaresAlongSide(NumSquaresOnViewSide);
+
+            gv.setNumSquaresAlongCanvas(dimensions[0]);
+            gv.setNumSquaresAlongSide(dimensions[1]);
             gv.updateGrid(getGrid());
             gv.setTouchListener(this);
         }
@@ -132,11 +151,77 @@ public class MainActivity extends AppCompatActivity
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
+        fab_swap = findViewById(R.id.fab_swap);
+        fab_clear = findViewById(R.id.fab_clear);
+
+        fab_swap.setVisibility(View.GONE);
+        fab_clear.setVisibility(View.GONE);
+
+        fab_swap.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                GameBoardView gv = getGridView();
+                if (gv == null) {
+                    return;
+                }
+        /*
+        int oldValue = gv.gridValue (upX, upY);
+        int newValue = oldValue + 1;
+        if (newValue >= NumRedBlueTypes) newValue = 0;
+        gv.setGridValue (upX, upY, newValue);
+        gv.invalidate ();
+        */
+
+        /*
+                int oldValue = gv.gridValue (upX, upY);
+                int newValue = gv.gridValue(selected_x, selected_y);
+                gv.setGridValue(upX, upY, newValue);
+                gv.setGridValue(selected_x, selected_y, oldValue);
+                gv.invalidate();
+                gv.clearSelections();
+                */
+                gv.clearSelections();
+                if (firstValue == 0)
+                {
+                    firstValue = gv.gridValue(selected_x, selected_y);
+                    first_x = selected_x;
+                    first_y = selected_y;
+
+                }
+                else
+                {
+                    int secondValue = gv.gridValue(selected_x, selected_y);
+                    gv.setGridValue(first_x, first_y, secondValue);
+                    gv.setGridValue(selected_x, selected_y, firstValue);
+                    gv.invalidate();
+                    selected_x = 0;
+                    selected_y = 0;
+                    first_x = 0;
+                    first_y = 0;
+                    firstValue = 0;
+                }
+
+
+
+
+            }
+        });
+
+        fab_clear.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+            }
+        });
+
+
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+
+
+
 
 
         //end chris code add
@@ -157,6 +242,13 @@ public class MainActivity extends AppCompatActivity
                             case R.id.notes:
                                 startActivity(new Intent(MainActivity.this, PlantNotes.class)); break;
 
+                            case R.id.nav_edit_plot:
+                                enterEditMode();
+                                break;
+
+                            case R.id.nav_water_mode:
+                                break;
+
                            // case R.id.
                         }
                         // Add code here to update the UI based on the item selected
@@ -168,6 +260,32 @@ public class MainActivity extends AppCompatActivity
 
 
     }
+
+    void enterEditMode()
+    {
+        GameBoardView gv = getGridView ();
+        if (gv == null) return;
+
+        if (!edit_flag) {
+            edit_flag = true;
+            fab_swap.setVisibility(View.VISIBLE);
+            fab_clear.setVisibility(View.VISIBLE);
+            selected_x = 0;
+            selected_y = 0;
+            first_x = 0;
+            first_y = 0;
+            firstValue = 0;
+        }
+        else
+        {
+            edit_flag = false;
+            gv.clearSelections();
+            fab_swap.setVisibility(View.GONE);
+            fab_clear.setVisibility(View.GONE);
+        }
+    }
+
+
 
     //side drawer buttons
     @Override public boolean onCreateOptionsMenu(Menu menu){
@@ -279,6 +397,10 @@ public class MainActivity extends AppCompatActivity
      */
 
     public void onTouchUp (int downX, int downY, int upX, int upY) {
+        if (!edit_flag)
+        {
+            return;
+        }
         GameBoardView gv = getGridView ();
         if (gv == null) return;
 
@@ -310,26 +432,7 @@ public class MainActivity extends AppCompatActivity
      */
 
     public void onLongTouchUp (int downX, int downY, int upX, int upY) {
-        GameBoardView gv = getGridView ();
-        if (gv == null) return;
-        /*
-        int oldValue = gv.gridValue (upX, upY);
-        int newValue = oldValue + 1;
-        if (newValue >= NumRedBlueTypes) newValue = 0;
-        gv.setGridValue (upX, upY, newValue);
-        gv.invalidate ();
-        */
 
-        int oldValue = gv.gridValue (upX, upY);
-        int newValue = gv.gridValue(selected_x, selected_y);
-        gv.setGridValue(upX, upY, newValue);
-        gv.setGridValue(selected_x, selected_y, oldValue);
-        gv.invalidate();
-        gv.clearSelections();
-
-
-        if (AppConfig.DEBUG)
-            Log.d (Constants.LOG_NAME, "onLongTouchUp x: " + upX + " y: " + upY + " old value: " + oldValue);
 
     }
 
