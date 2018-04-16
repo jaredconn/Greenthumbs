@@ -2,18 +2,12 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1eea1656620e446844c401d12ec79ea4",
+    "identityHash": "55c2d52da4375ab6e2211f89231c2cc9",
     "entities": [
       {
         "tableName": "plant",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plant_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `plantName` TEXT, `note_id` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plantName` TEXT, `note_id` INTEGER NOT NULL, `plant_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `x` INTEGER NOT NULL, `y` INTEGER NOT NULL)",
         "fields": [
-          {
-            "fieldPath": "plant_id",
-            "columnName": "plant_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "plant_name",
             "columnName": "plantName",
@@ -23,6 +17,24 @@
           {
             "fieldPath": "note_id",
             "columnName": "note_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "plant_id",
+            "columnName": "plant_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "x",
+            "columnName": "x",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "y",
+            "columnName": "y",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -133,7 +145,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"1eea1656620e446844c401d12ec79ea4\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"55c2d52da4375ab6e2211f89231c2cc9\")"
     ]
   }
 }

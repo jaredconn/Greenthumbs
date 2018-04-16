@@ -32,8 +32,11 @@ public interface DatabaseFunctions {
     void deleteNote(Note note);
 
     @Delete
-    void delete(Plant plant);
+    void deletePlant(Plant plant);
 
     @Query("SELECT * FROM notes INNER JOIN plant_join_note ON notes.note_id=plant_join_note.note_id WHERE plant_join_note.plant_id=:plant_id")
     List<Note> getNotesForPlant(final long plant_id);
+
+    @Query("SELECT plant_id from plant WHERE x=:x AND y=:y")
+    long getPlantId(int x, int y);
 }

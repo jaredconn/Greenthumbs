@@ -19,8 +19,10 @@ import java.lang.ref.WeakReference;
 
 public class AddNote extends AppCompatActivity {
 
-    // private AppDatabase mDb;
-    // private TextView notes;
+
+    static int x;
+    static int y;
+
     /*database*/
     private AppDatabase plantDatabase;
     private Note note;
@@ -33,7 +35,10 @@ public class AddNote extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_notes);
 
-        //Intent intent = getIntent();
+        /*the coordinates for the query*/
+        Bundle intent = getIntent().getExtras();
+        x = intent.getInt("x");
+        y = intent.getInt("y");
 
     et_title = findViewById(R.id.et_title);
     et_content = findViewById(R.id.et_content);
@@ -99,6 +104,18 @@ static class InsertTask extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... objs) {
         long j = activityReference.get().plantDatabase.databaseFunc().insertNote(note);
         note.setNote_id(j);
+
+        //Bundle intent = getIntent().getExtras();
+
+       // x = intent.getInt("x");
+       // y = intent.getInt("y");
+
+        //todo set plant id
+        note.setPlant_id(activityReference.get().plantDatabase.databaseFunc().getPlantId(x,y));
+
+
+        Log.e("ID ", "TESTING X AND Y: "+x + " "+  y );
+
         Log.e("ID ", "doInBackground: "+j );
         return true;
     }
