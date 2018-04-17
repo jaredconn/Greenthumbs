@@ -35,7 +35,7 @@ public class AddPlant extends AppCompatActivity {
 
         plantDatabase = AppDatabase.getInstance(AddPlant.this);
 
-        final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "plantdb.db").build();
+      //  final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "plantdb.db").build();
 
 
         plant = new Plant();
@@ -44,6 +44,8 @@ public class AddPlant extends AppCompatActivity {
         Bundle intent = getIntent().getExtras();
         x = intent.getInt("x");
         y = intent.getInt("y");
+
+        Log.e("AddPlant TESTTESTTEST ", "TESTING X AND Y: "+x + " "+  y );
 
         plant.setX(x);
         plant.setY(y);

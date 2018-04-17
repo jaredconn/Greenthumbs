@@ -28,6 +28,8 @@ public class AddNote extends AppCompatActivity {
     private Note note;
     private boolean update;
 
+    private static PlantJoinNote plantJoinNote;
+
     private TextInputEditText et_title, et_content;
 
     @Override
@@ -111,8 +113,15 @@ static class InsertTask extends AsyncTask<Void, Void, Boolean> {
        // y = intent.getInt("y");
 
         //todo set plant id
-        note.setPlant_id(activityReference.get().plantDatabase.databaseFunc().getPlantId(x,y));
+        long p_id = activityReference.get().plantDatabase.databaseFunc().getPlantId(x,y);
 
+        note.setPlant_id(p_id);
+
+        plantJoinNote = new PlantJoinNote(p_id, j);
+
+
+
+        Log.e("ID ", "PLANT ID PLANT ID: "+p_id );
 
         Log.e("ID ", "TESTING X AND Y: "+x + " "+  y );
 
