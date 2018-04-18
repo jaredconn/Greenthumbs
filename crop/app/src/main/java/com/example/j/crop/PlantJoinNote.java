@@ -18,10 +18,10 @@ import android.arch.persistence.room.ForeignKey;
                             childColumns = "note_id")
             })
     public class PlantJoinNote {
-        public final int plant_id;
-        public final int note_id;
+        public final long plant_id;
+        public final long note_id;
 
-        public PlantJoinNote(final int plant_id, final int note_id) {
+        public PlantJoinNote(final long plant_id, final long note_id) {
             this.plant_id = plant_id;
             this.note_id = note_id;
         }

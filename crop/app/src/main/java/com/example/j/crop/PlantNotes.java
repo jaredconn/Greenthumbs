@@ -33,12 +33,17 @@ import com.example.j.crop.AppDatabase;
 public class PlantNotes extends AppCompatActivity {
 
     // private TextView notes;
-
+    private int x, y;
 
    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
+
+       Bundle intent = getIntent().getExtras();
+
+       x = intent.getInt("x");
+       y = intent.getInt("y");
 
         Button startNotes = (Button) findViewById(R.id.upload);
 
@@ -46,7 +51,12 @@ public class PlantNotes extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PlantNotes.this, AddNoteActivity.class);
-                //intent.putExtra("plant_id",
+
+                intent.putExtra("x", x);
+                intent.putExtra("y", y);
+
+                Log.e("PLANTNOTES   ", "testing x and y: "+x + " " +y + "" ); //thats working
+
                 //TODO intent.putExtra("plantID", value) and then query for that plant's notes
                 startActivity(intent);
             }

@@ -40,13 +40,25 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
     private NotesAdapter notesAdapter;
     private int pos;
 
+    private static int x;
+    private static int y;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notes_recycler);
+
+        Bundle intent = getIntent().getExtras();
+        x = intent.getInt("x");
+        y = intent.getInt("y");
+
+
         initializeVies();
         displayList();
+
+
+
     }
 
     private void displayList(){
@@ -68,7 +80,7 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
         @Override
         protected List<Note> doInBackground(Void... voids) {
             if (activityReference.get()!=null)
-                return activityReference.get().noteDatabase.databaseFunc().getNotesForPlant(1284);
+                return activityReference.get().noteDatabase.databaseFunc().getNotes();//ForPlant(activityReference.get().noteDatabase.databaseFunc().getPlantId(x,y));
             else
                 return null;
         }
@@ -101,7 +113,20 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
     private View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            startActivityForResult(new Intent(AddNoteActivity.this, AddNote.class),100);
+
+            Intent intent = new Intent(AddNoteActivity.this, AddNote.class);
+
+            intent.putExtra("x", x);
+            intent.putExtra("y", y);
+
+            Log.e("AddNoteActivity   ", "testing x and y: "+x + " " +y + "" ); //this one works
+
+            startActivityForResult(intent, 100);
+
+            //TODO intent.putExtra("plantID", value) and then query for that plant's notes
+           // startActivity(intent);
+
+            //startActivityForResult(new Intent(AddNoteActivity.this, AddNote.class),100);
         }
     };
 
