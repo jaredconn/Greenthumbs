@@ -88,6 +88,4 @@ public class AddPlant extends AppCompatActivity {
             }
         }
     }
-
-
 }

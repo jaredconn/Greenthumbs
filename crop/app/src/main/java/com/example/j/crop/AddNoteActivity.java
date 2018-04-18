@@ -79,8 +79,14 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
         //todo getNotesForPlant(long plant_id) ...get the specified notes for selected plant
         @Override
         protected List<Note> doInBackground(Void... voids) {
-            if (activityReference.get()!=null)
-                return activityReference.get().noteDatabase.databaseFunc().getNotes();//ForPlant(activityReference.get().noteDatabase.databaseFunc().getPlantId(x,y));
+            if (activityReference.get()!=null) {
+
+                long plant_id = activityReference.get().noteDatabase.databaseFunc().getPlantId(x, y);
+
+                Log.e("AddNoteActivity ", "plant_id888888888: "+plant_id );
+
+                return activityReference.get().noteDatabase.databaseFunc().getNotesForPlant(plant_id);
+            }
             else
                 return null;
         }
@@ -119,7 +125,15 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
             intent.putExtra("x", x);
             intent.putExtra("y", y);
 
+           // intent.putExtra("note",notes.get(pos));
+
+            /*
+            AddNoteActivity.this.pos = pos;
+            intent.putExtra("note", notes.get(pos));
+            */
+
             Log.e("AddNoteActivity   ", "testing x and y: "+x + " " +y + "" ); //this one works
+
 
             startActivityForResult(intent, 100);
 

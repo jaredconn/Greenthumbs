@@ -65,13 +65,21 @@ public class AddNote extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             // fetch data and create note object
+            Thread thread = new Thread(new Runnable() {
+                public void run()
+                { //do this every time so that the plant_id is saved
+                    // code goes here.
+                    db.databaseFunc().updateNote(note);
+                }});
+            thread.start();
+
             if (update) {
                 note.setContent(et_content.getText().toString());
                 note.setTitle(et_title.getText().toString());
 
-                Thread thread = new Thread(new Runnable() {
-                    public void run()
-                    {
+                        Thread thread2 = new Thread(new Runnable() {
+                            public void run()
+                            {
                         // code goes here.
                         db.databaseFunc().updateNote(note);
                     }});
@@ -119,11 +127,9 @@ static class InsertTask extends AsyncTask<Void, Void, Boolean> {
 
         plantJoinNote = new PlantJoinNote(p_id, j);
 
-
-
         Log.e("ID ", "PLANT ID PLANT ID: "+p_id );
 
-        Log.e("ID ", "TESTING X AND Y: "+x + " "+  y );
+       // Log.e("ID ", "TESTING X AND Y: "+x + " "+  y );
 
         Log.e("ID ", "doInBackground: "+j );
         return true;
