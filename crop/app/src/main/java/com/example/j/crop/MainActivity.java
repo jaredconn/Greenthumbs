@@ -1,5 +1,7 @@
 package com.example.j.crop;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 
@@ -11,6 +13,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -44,11 +47,10 @@ public class MainActivity extends AppCompatActivity
     FloatingActionButton fab_swap;
     FloatingActionButton fab_clear;
 
-
-
-
-
+    private boolean water_flag = false;
     private boolean edit_flag = false;
+
+    ArrayList<Pair<Integer,Integer>> watered = new ArrayList<>();
 
     static public final int NumSquaresOnGridSide = 10;
     static public final int NumSquaresOnViewSide = 8;
@@ -208,7 +210,25 @@ public class MainActivity extends AppCompatActivity
 
         fab_clear.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                GameBoardView gv = getGridView();
+                if (gv == null) {
+                    return;
+                }
+                gv.clearSelections();
+                if (selected_x == 0 && selected_y == 0)
+                {
+                    return;
+                }
+                else
+                {
+                    gv.setGridValue(selected_x, selected_y, 6);
+                    gv.invalidate();
+                    selected_x = 0;
+                    selected_y = 0;
+                    first_x = 0;
+                    first_y = 0;
+                    firstValue = 0;
+                }
             }
         });
 
@@ -227,7 +247,7 @@ public class MainActivity extends AppCompatActivity
         //end chris code add
 
 
-//handles button clicks inside of side drawer
+        //handles button clicks inside of side drawer
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -240,13 +260,42 @@ public class MainActivity extends AppCompatActivity
 
                         switch (menuItem.getItemId()) {
                             case R.id.notes:
-                                startActivity(new Intent(MainActivity.this, PlantNotes.class)); break;
+                                startActivity(new Intent(MainActivity.this, PlantNotes.class));
+                                break;
 
                             case R.id.nav_edit_plot:
                                 enterEditMode();
                                 break;
 
                             case R.id.nav_water_mode:
+                                if (water_flag)
+                                {
+                                    //TODO: UPDATE DATABASE HERE WITH PLANT WATERED. WATERED PLANTS ARE IN ARRAYLIST watered
+                                    //TODO: ALSO CANNOT WATER DIRT OR PROGRAM CRASHES
+                                    water_flag = false;
+
+                                    //need to reset icons in watered arraylist
+                                    GameBoardView gv = getGridView ();
+                                    for (Pair<Integer, Integer> p : watered )
+                                    {
+                                        int wateredValue = gv.gridValue (p.first, p.second);
+                                        int originalValue = wateredValue - 3;
+                                        gv.setGridValue (p.first, p.second, originalValue);
+                                        gv.invalidate ();
+                                    }
+                                }
+                                else
+                                {
+                                    water_flag = true;
+                                    watered.clear();
+
+                                    //clear edit mode if in edit mode
+                                    GameBoardView gv = getGridView ();
+                                    edit_flag = false;
+                                    gv.clearSelections();
+                                    fab_swap.setVisibility(View.GONE);
+                                    fab_clear.setVisibility(View.GONE);
+                                }
                                 break;
 
                            // case R.id.
@@ -275,6 +324,9 @@ public class MainActivity extends AppCompatActivity
             first_x = 0;
             first_y = 0;
             firstValue = 0;
+
+            //turn off water mode if its on
+            water_flag = false;
         }
         else
         {
@@ -397,12 +449,21 @@ public class MainActivity extends AppCompatActivity
      */
 
     public void onTouchUp (int downX, int downY, int upX, int upY) {
+        GameBoardView gv = getGridView ();
+        if (gv == null) return;
+
+        if(water_flag)
+        {
+            watered.add(new Pair<>(upX, upY));
+            int oldValue = gv.gridValue (upX, upY);
+            int newValue = oldValue + 3;
+            gv.setGridValue (upX, upY, newValue);
+            gv.invalidate ();
+        }
         if (!edit_flag)
         {
             return;
         }
-        GameBoardView gv = getGridView ();
-        if (gv == null) return;
 
         boolean isSelected = gv.isSelected (upX, upY);
         gv.clearSelections ();
