@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 /**
  * Created by J on 4/9/2018.
@@ -27,8 +28,8 @@ public class AddNote extends AppCompatActivity {
     private AppDatabase plantDatabase;
     private Note note;
     private boolean update;
+    private boolean firstNoteCreated = false;
 
-    private static PlantJoinNote plantJoinNote;
 
     private TextInputEditText et_title, et_content;
 
@@ -65,33 +66,46 @@ public class AddNote extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             // fetch data and create note object
-            Thread thread = new Thread(new Runnable() {
-                public void run()
-                { //do this every time so that the plant_id is saved
-                    // code goes here.
-                    db.databaseFunc().updateNote(note);
-                }});
-            thread.start();
+
+            if (firstNoteCreated) { //don't do this the first time because there are no notes - null reference
+                Thread thread = new Thread(new Runnable() {
+                    public void run() {
+                        // code goes here.
+                        db.databaseFunc().updateNote(note);
+                    }
+                });
+                thread.start();
+            }
 
             if (update) {
                 note.setContent(et_content.getText().toString());
                 note.setTitle(et_title.getText().toString());
 
-                        Thread thread2 = new Thread(new Runnable() {
-                            public void run()
-                            {
+                Thread thread = new Thread(new Runnable() {
+                    public void run() {
                         // code goes here.
                         db.databaseFunc().updateNote(note);
-                    }});
+                    }
+                });
                 thread.start();
+                setResult(note, 2);
 
-                setResult(note,2);
             } else {
                 note = new Note(et_content.getText().toString(), et_title.getText().toString());
                 new InsertTask(AddNote.this, note).execute();
+                firstNoteCreated = true;
+                Thread thread = new Thread(new Runnable() {
+                    public void run() { //do this every time so that the plant_id is saved
+                        // code goes here.
+                        db.databaseFunc().updateNote(note);
+                    }
+                });
+                thread.start();
             }
-        }});
-}
+            }
+        });
+    }
+
 
     private void setResult(Note note, int flag){
         setResult(flag,new Intent().putExtra("note",note));
@@ -114,24 +128,10 @@ static class InsertTask extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... objs) {
         long j = activityReference.get().plantDatabase.databaseFunc().insertNote(note);
         note.setNote_id(j);
-
-        //Bundle intent = getIntent().getExtras();
-
-       // x = intent.getInt("x");
-       // y = intent.getInt("y");
-
-        //todo set plant id
         long p_id = activityReference.get().plantDatabase.databaseFunc().getPlantId(x,y);
-
         note.setPlant_id(p_id);
 
-        plantJoinNote = new PlantJoinNote(p_id, j);
-
-        Log.e("ID ", "PLANT ID PLANT ID: "+p_id );
-
-       // Log.e("ID ", "TESTING X AND Y: "+x + " "+  y );
-
-        Log.e("ID ", "doInBackground: "+j );
+        //Log.e("ID ", "doInBackground: "+j );
         return true;
     }
 

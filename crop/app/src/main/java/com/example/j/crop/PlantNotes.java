@@ -57,7 +57,6 @@ public class PlantNotes extends AppCompatActivity {
 
                 Log.e("PLANTNOTES   ", "testing x and y: "+x + " " +y + "" ); //thats working
 
-                //TODO intent.putExtra("plantID", value) and then query for that plant's notes
                 startActivity(intent);
             }
         });

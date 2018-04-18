@@ -53,12 +53,8 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
         x = intent.getInt("x");
         y = intent.getInt("y");
 
-
         initializeVies();
         displayList();
-
-
-
     }
 
     private void displayList(){
@@ -75,15 +71,13 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
             activityReference = new WeakReference<>(context);
         }
 
-
-        //todo getNotesForPlant(long plant_id) ...get the specified notes for selected plant
         @Override
         protected List<Note> doInBackground(Void... voids) {
             if (activityReference.get()!=null) {
 
                 long plant_id = activityReference.get().noteDatabase.databaseFunc().getPlantId(x, y);
 
-                Log.e("AddNoteActivity ", "plant_id888888888: "+plant_id );
+               // Log.e("AddNoteActivity ", "plant_id888888888: "+plant_id );
 
                 return activityReference.get().noteDatabase.databaseFunc().getNotesForPlant(plant_id);
             }
@@ -125,22 +119,10 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
             intent.putExtra("x", x);
             intent.putExtra("y", y);
 
-           // intent.putExtra("note",notes.get(pos));
-
-            /*
-            AddNoteActivity.this.pos = pos;
-            intent.putExtra("note", notes.get(pos));
-            */
-
-            Log.e("AddNoteActivity   ", "testing x and y: "+x + " " +y + "" ); //this one works
-
+          //  Log.e("AddNoteActivity   ", "testing x and y: "+x + " " +y + "" );
 
             startActivityForResult(intent, 100);
 
-            //TODO intent.putExtra("plantID", value) and then query for that plant's notes
-           // startActivity(intent);
-
-            //startActivityForResult(new Intent(AddNoteActivity.this, AddNote.class),100);
         }
     };
 
@@ -175,7 +157,6 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
                                         new Intent(AddNoteActivity.this,
                                                 AddNote.class).putExtra("note",notes.get(pos)),
                                         100);
-
                                 break;
                         }
                     }
