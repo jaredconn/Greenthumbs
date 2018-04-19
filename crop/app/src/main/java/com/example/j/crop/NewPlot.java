@@ -28,13 +28,13 @@ public class NewPlot extends AppCompatActivity {
 
         Button button_take_picture = findViewById(R.id.button_create);
         final EditText input_one = findViewById(R.id.input_1);
-        final EditText input_two = findViewById(R.id.input_2);
+        //final EditText input_two = findViewById(R.id.input_2);
 
         button_take_picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dimensions[0] = Integer.parseInt(input_one.getText().toString());
-                dimensions[1] = Integer.parseInt(input_two.getText().toString());
+                dimensions[1] = Integer.parseInt(input_one.getText().toString());
                 to_second_activity();
             }
         });

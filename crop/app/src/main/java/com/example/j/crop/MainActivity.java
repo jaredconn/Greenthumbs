@@ -254,7 +254,15 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         // set item as selected to persist highlight
-                        menuItem.setChecked(true);
+                        if(menuItem.isChecked() == false)
+                        {
+                            menuItem.setChecked(true);
+                        }
+                        else
+                        {
+                            menuItem.setChecked(false);
+                        }
+
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
 
@@ -268,34 +276,7 @@ public class MainActivity extends AppCompatActivity
                                 break;
 
                             case R.id.nav_water_mode:
-                                if (water_flag)
-                                {
-                                    //TODO: UPDATE DATABASE HERE WITH PLANT WATERED. WATERED PLANTS ARE IN ARRAYLIST watered
-                                    //TODO: ALSO CANNOT WATER DIRT OR PROGRAM CRASHES
-                                    water_flag = false;
-
-                                    //need to reset icons in watered arraylist
-                                    GameBoardView gv = getGridView ();
-                                    for (Pair<Integer, Integer> p : watered )
-                                    {
-                                        int wateredValue = gv.gridValue (p.first, p.second);
-                                        int originalValue = wateredValue - 3;
-                                        gv.setGridValue (p.first, p.second, originalValue);
-                                        gv.invalidate ();
-                                    }
-                                }
-                                else
-                                {
-                                    water_flag = true;
-                                    watered.clear();
-
-                                    //clear edit mode if in edit mode
-                                    GameBoardView gv = getGridView ();
-                                    edit_flag = false;
-                                    gv.clearSelections();
-                                    fab_swap.setVisibility(View.GONE);
-                                    fab_clear.setVisibility(View.GONE);
-                                }
+                                enterWaterMode();
                                 break;
 
                            // case R.id.
@@ -310,8 +291,64 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    void enterWaterMode()
+    {
+        GameBoardView gv = getGridView ();
+        if (edit_flag)
+        {
+            edit_flag = false;
+            gv.clearSelections();
+            fab_swap.setVisibility(View.GONE);
+            fab_clear.setVisibility(View.GONE);
+        }
+
+        if (water_flag)
+        {
+            //TODO: UPDATE DATABASE HERE WITH PLANT WATERED. WATERED PLANTS ARE IN ARRAYLIST watered
+            //TODO: ALSO CANNOT WATER DIRT OR PROGRAM CRASHES
+            //TODO: MAYBE MAKE THIS A FUNCTION?
+            water_flag = false;
+
+            //need to reset icons in watered arraylist
+            for (Pair<Integer, Integer> p : watered )
+            {
+                int wateredValue = gv.gridValue (p.first, p.second);
+                int originalValue = wateredValue - 3;
+                gv.setGridValue (p.first, p.second, originalValue);
+                gv.invalidate ();
+            }
+        }
+        else
+        {
+            water_flag = true;
+            watered.clear();
+
+            //clear edit mode if in edit mode
+            edit_flag = false;
+            gv.clearSelections();
+            fab_swap.setVisibility(View.GONE);
+            fab_clear.setVisibility(View.GONE);
+        }
+    }
+
     void enterEditMode()
     {
+        if (water_flag) {
+            //TODO: UPDATE DATABASE HERE WITH PLANT WATERED. WATERED PLANTS ARE IN ARRAYLIST watered
+            //TODO: ALSO CANNOT WATER DIRT OR PROGRAM CRASHES
+            //TODO: MAYBE MAKE THIS A FUNCTION?
+            water_flag = false;
+
+            //need to reset icons in watered arraylist
+            GameBoardView gv = getGridView();
+            for (Pair<Integer, Integer> p : watered) {
+                int wateredValue = gv.gridValue(p.first, p.second);
+                int originalValue = wateredValue - 3;
+                gv.setGridValue(p.first, p.second, originalValue);
+                gv.invalidate();
+            }
+        }
+
         GameBoardView gv = getGridView ();
         if (gv == null) return;
 
@@ -454,6 +491,10 @@ public class MainActivity extends AppCompatActivity
 
         if(water_flag)
         {
+            if (gv.gridValue(upX, upY) > 2)
+            {
+                return;
+            }
             watered.add(new Pair<>(upX, upY));
             int oldValue = gv.gridValue (upX, upY);
             int newValue = oldValue + 3;
