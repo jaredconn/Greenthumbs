@@ -20,7 +20,6 @@ import java.util.Objects;
 
 public class AddNote extends AppCompatActivity {
 
-
     static int x;
     static int y;
 

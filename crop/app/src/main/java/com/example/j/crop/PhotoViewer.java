@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -30,34 +32,38 @@ import com.example.j.crop.AppDatabase;
  * https://www.pluralsight.com/guides/android/making-a-notes-app-using-room-database
  */
 
-public class PlantNotes extends AppCompatActivity {
+public class PhotoViewer extends AppCompatActivity {
 
-    // private TextView notes;
-    private int x, y;
+    private int x, y = 0;
 
-   @Override
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
 
-       Bundle intent = getIntent().getExtras();
+        Bundle intent = getIntent().getExtras();
 
-       x = intent.getInt("x");
-       y = intent.getInt("y");
+        x = intent.getInt("x");
+        y = intent.getInt("y");
 
-        Button startNotes = (Button) findViewById(R.id.upload);
+        Button startCamera = (Button) findViewById(R.id.upload);
 
-        startNotes.setOnClickListener(new View.OnClickListener() {
+        startCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(PlantNotes.this, AddNoteActivity.class);
+
+//todo photo code
+                /*
+                Intent intent = new Intent(PhotoViewer.this, AddNoteActivity.class);
 
                 intent.putExtra("x", x);
                 intent.putExtra("y", y);
 
-                Log.e("PLANTNOTES   ", "testing x and y: "+x + " " +y + "" ); //thats working
+                //Log.e("PLANTNOTES   ", "testing x and y: "+x + " " +y + "" ); //thats working
 
                 startActivity(intent);
+                */
+
             }
         });
 
