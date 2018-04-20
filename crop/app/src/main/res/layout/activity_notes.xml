@@ -26,16 +26,6 @@
 
     </HorizontalScrollView>
 
-    <Button
-        android:id="@+id/uploadPhoto"
-        android:background="@drawable/camera_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignBottom="@id/horizontalScrollView"
-        android:layout_weight="1.0"
-        />
-
 
     <ScrollView
         android:id="@+id/SCROLLER_ID"
@@ -53,7 +43,7 @@
 
     <Button
         android:id="@+id/upload"
-        android:text="Start Notes Activity"
+        android:text="Start Camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"

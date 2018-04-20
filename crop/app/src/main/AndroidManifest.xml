@@ -5,7 +5,11 @@
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="24" />
-
+		
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -14,31 +18,33 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:configChanges="orientation|keyboardHidden|screenSize">
-
+            android:name=".LoadActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+		<activity
+            android:name=".NewPlot"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
         <activity
-            android:name=".PlantNotes"
-            android:theme="@style/Theme.AppCompat.Light"
-            android:windowSoftInputMode="adjustPan"
-            android:configChanges="orientation|keyboardHidden|screenSize"/>
-
+            android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+		
         <activity android:name=".AddNoteActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".AddNote"
             android:theme="@style/Theme.AppCompat.Light" />
-        <activity android:name=".AddPlant"
+        <activity android:name=".AddPlant" />
+        <activity android:name=".PhotoViewer"
             />
-
-
+        
     </application>
 
 </manifest>

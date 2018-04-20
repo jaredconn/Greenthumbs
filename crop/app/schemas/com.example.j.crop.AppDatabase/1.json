@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "55c2d52da4375ab6e2211f89231c2cc9",
+    "identityHash": "c5c8e15ea6cb9f0b065dcdc39e8a8eb8",
     "entities": [
       {
         "tableName": "plant",
@@ -91,61 +91,11 @@
         },
         "indices": [],
         "foreignKeys": []
-      },
-      {
-        "tableName": "plant_join_note",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plant_id` INTEGER NOT NULL, `note_id` INTEGER NOT NULL, PRIMARY KEY(`plant_id`, `note_id`), FOREIGN KEY(`plant_id`) REFERENCES `plant`(`plant_id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`note_id`) REFERENCES `notes`(`note_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
-        "fields": [
-          {
-            "fieldPath": "plant_id",
-            "columnName": "plant_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "note_id",
-            "columnName": "note_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "plant_id",
-            "note_id"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": [
-          {
-            "table": "plant",
-            "onDelete": "NO ACTION",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "plant_id"
-            ],
-            "referencedColumns": [
-              "plant_id"
-            ]
-          },
-          {
-            "table": "notes",
-            "onDelete": "NO ACTION",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "note_id"
-            ],
-            "referencedColumns": [
-              "note_id"
-            ]
-          }
-        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"55c2d52da4375ab6e2211f89231c2cc9\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c5c8e15ea6cb9f0b065dcdc39e8a8eb8\")"
     ]
   }
 }

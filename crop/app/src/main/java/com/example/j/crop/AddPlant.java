@@ -23,20 +23,12 @@ public class AddPlant extends AppCompatActivity {
 
     private AppDatabase plantDatabase;
     private Plant plant;
-    private boolean update;
-
-   // private TextInputEditText et_title, et_content;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setContentView(R.layout.activity_add_notes);
-
 
         plantDatabase = AppDatabase.getInstance(AddPlant.this);
-
-      //  final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "plantdb.db").build();
-
 
         plant = new Plant();
         int x,y;
@@ -45,13 +37,10 @@ public class AddPlant extends AppCompatActivity {
         x = intent.getInt("x");
         y = intent.getInt("y");
 
-        Log.e("AddPlant TESTTESTTEST ", "TESTING X AND Y: "+x + " "+  y );
-
         plant.setX(x);
         plant.setY(y);
 
         new AddPlant.InsertTask(AddPlant.this, plant).execute();
-
     }
 
     private void setResult(Plant plant, int flag){
@@ -88,6 +77,4 @@ public class AddPlant extends AppCompatActivity {
             }
         }
     }
-
-
 }

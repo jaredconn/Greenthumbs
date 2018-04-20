@@ -1,5 +1,7 @@
 package com.example.j.crop;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 
@@ -7,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.SyncStateContract;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentActivity;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,11 +18,14 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Toast;
 
 /**
  * This activity displays a grid of image squares that represent a game board.
@@ -38,7 +44,20 @@ import android.support.v7.widget.Toolbar;
 public class MainActivity extends AppCompatActivity
         implements GameBoardTouchListener
 {
+	private int selected_x = 0;
+    private int selected_y = 0;
+    private int first_x = 0;
+    private int first_y = 0;
+    private int firstValue = 0;
 
+    FloatingActionButton fab_swap;
+    FloatingActionButton fab_clear;
+
+    private boolean water_flag = false;
+    private boolean edit_flag = false;
+
+    ArrayList<Pair<Integer,Integer>> watered = new ArrayList<>();
+	
     static public final int NumSquaresOnGridSide = 4;
     static public final int NumSquaresOnViewSide = 8;
     static public final int NumRedBlueTypes = 3;     // Used with simple squares demo; types: blank, red, blue
@@ -53,8 +72,8 @@ public class MainActivity extends AppCompatActivity
      */
 
     private int [][] pGrid;
-    private int x;
-    private int y;
+    private int x,y = 0;
+   // private int y;
 
     /**
      * Get the value of the Grid property.
@@ -112,8 +131,15 @@ public class MainActivity extends AppCompatActivity
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+		
+		//chris work
+        int[] dimensions = getIntent().getIntArrayExtra("DIMENSIONS");
 
-        setupMyGrid(NumSquaresOnGridSide);
+        //end chris work
+
+
+        //setupMyGrid(NumSquaresOnGridSide);
+        setupMyGrid(dimensions[0]);
 
         GameBoardView gv = (GameBoardView) findViewById(R.id.boardview);
 
@@ -121,8 +147,11 @@ public class MainActivity extends AppCompatActivity
 
             setGridView(gv);
 
-            gv.setNumSquaresAlongCanvas(NumSquaresOnGridSide);
-            gv.setNumSquaresAlongSide(NumSquaresOnViewSide);
+            //gv.setNumSquaresAlongCanvas(NumSquaresOnGridSide);
+            //gv.setNumSquaresAlongSide(NumSquaresOnViewSide);
+
+            gv.setNumSquaresAlongCanvas(dimensions[0]);
+            gv.setNumSquaresAlongSide(dimensions[1]);
             gv.updateGrid(getGrid());
             gv.setTouchListener(this);
         }
@@ -131,6 +160,85 @@ public class MainActivity extends AppCompatActivity
         //chris added code below
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
+
+        fab_swap = findViewById(R.id.fab_swap);
+        fab_clear = findViewById(R.id.fab_clear);
+
+        fab_swap.setVisibility(View.GONE);
+        fab_clear.setVisibility(View.GONE);
+
+        fab_swap.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                GameBoardView gv = getGridView();
+                if (gv == null) {
+                    return;
+                }
+        /*
+        int oldValue = gv.gridValue (upX, upY);
+        int newValue = oldValue + 1;
+        if (newValue >= NumRedBlueTypes) newValue = 0;
+        gv.setGridValue (upX, upY, newValue);
+        gv.invalidate ();
+        */
+
+        /*
+                int oldValue = gv.gridValue (upX, upY);
+                int newValue = gv.gridValue(selected_x, selected_y);
+                gv.setGridValue(upX, upY, newValue);
+                gv.setGridValue(selected_x, selected_y, oldValue);
+                gv.invalidate();
+                gv.clearSelections();
+                */
+                gv.clearSelections();
+                if (firstValue == 0)
+                {
+                    firstValue = gv.gridValue(selected_x, selected_y);
+                    first_x = selected_x;
+                    first_y = selected_y;
+
+                }
+                else
+                {
+                    int secondValue = gv.gridValue(selected_x, selected_y);
+                    gv.setGridValue(first_x, first_y, secondValue);
+                    gv.setGridValue(selected_x, selected_y, firstValue);
+                    gv.invalidate();
+                    selected_x = 0;
+                    selected_y = 0;
+                    first_x = 0;
+                    first_y = 0;
+                    firstValue = 0;
+                }
+
+
+
+
+            }
+        });
+
+        fab_clear.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                GameBoardView gv = getGridView();
+                if (gv == null) {
+                    return;
+                }
+                gv.clearSelections();
+                if (selected_x == 0 && selected_y == 0)
+                {
+                    return;
+                }
+                else
+                {
+                    gv.setGridValue(selected_x, selected_y, 6);
+                    gv.invalidate();
+                    selected_x = 0;
+                    selected_y = 0;
+                    first_x = 0;
+                    first_y = 0;
+                    firstValue = 0;
+                }
+            }
+        });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -149,20 +257,41 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         // set item as selected to persist highlight
-                        menuItem.setChecked(true);
+                        if(menuItem.isChecked() == false)
+                        {
+                            menuItem.setChecked(true);
+                        }
+                        else
+                        {
+                            menuItem.setChecked(false);
+                        }
+
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
 
                         switch (menuItem.getItemId()) {
                             case R.id.notes:
 
-                                Intent intent = new Intent(MainActivity.this, PlantNotes.class);
+                                if(x == 0 && y == 0) //if no plant was selected, don't start the next activity
+                                {
+                                    Toast.makeText(MainActivity.this, "No Plant Selected", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
 
-                                intent.putExtra("x", x);
-                                intent.putExtra("y", y);
+                                    intent.putExtra("x", x);
+                                    intent.putExtra("y", y);
 
-                                startActivity(intent); break;
+                                    startActivity(intent);
+                                    break;
+                                }
+						   case R.id.nav_edit_plot:
+                                enterEditMode();
+                                break;
 
+                            case R.id.nav_water_mode:
+                                enterWaterMode();
+                                break;
                            // case R.id.
                         }
                         // Add code here to update the UI based on the item selected
@@ -175,13 +304,90 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private int getX() {
-        return this.x;
+    void enterWaterMode()
+    {
+        GameBoardView gv = getGridView ();
+        if (edit_flag)
+        {
+            edit_flag = false;
+            gv.clearSelections();
+            fab_swap.setVisibility(View.GONE);
+            fab_clear.setVisibility(View.GONE);
+        }
+
+        if (water_flag)
+        {
+            //TODO: UPDATE DATABASE HERE WITH PLANT WATERED. WATERED PLANTS ARE IN ARRAYLIST watered
+            //TODO: ALSO CANNOT WATER DIRT OR PROGRAM CRASHES
+            //TODO: MAYBE MAKE THIS A FUNCTION?
+            water_flag = false;
+
+            //need to reset icons in watered arraylist
+            for (Pair<Integer, Integer> p : watered )
+            {
+                int wateredValue = gv.gridValue (p.first, p.second);
+                int originalValue = wateredValue - 3;
+                gv.setGridValue (p.first, p.second, originalValue);
+                gv.invalidate ();
+            }
+        }
+        else
+        {
+            water_flag = true;
+            watered.clear();
+
+            //clear edit mode if in edit mode
+            edit_flag = false;
+            gv.clearSelections();
+            fab_swap.setVisibility(View.GONE);
+            fab_clear.setVisibility(View.GONE);
+        }
     }
 
-    private int getY() {
-        return this.y;
+    void enterEditMode()
+    {
+        if (water_flag) {
+            //TODO: UPDATE DATABASE HERE WITH PLANT WATERED. WATERED PLANTS ARE IN ARRAYLIST watered
+            //TODO: ALSO CANNOT WATER DIRT OR PROGRAM CRASHES
+            //TODO: MAYBE MAKE THIS A FUNCTION?
+            water_flag = false;
+
+            //need to reset icons in watered arraylist
+            GameBoardView gv = getGridView();
+            for (Pair<Integer, Integer> p : watered) {
+                int wateredValue = gv.gridValue(p.first, p.second);
+                int originalValue = wateredValue - 3;
+                gv.setGridValue(p.first, p.second, originalValue);
+                gv.invalidate();
+            }
+        }
+
+        GameBoardView gv = getGridView ();
+        if (gv == null) return;
+
+        if (!edit_flag) {
+            edit_flag = true;
+            fab_swap.setVisibility(View.VISIBLE);
+            fab_clear.setVisibility(View.VISIBLE);
+            selected_x = 0;
+            selected_y = 0;
+            first_x = 0;
+            first_y = 0;
+            firstValue = 0;
+
+            //turn off water mode if its on
+            water_flag = false;
+        }
+        else
+        {
+            edit_flag = false;
+            gv.clearSelections();
+            fab_swap.setVisibility(View.GONE);
+            fab_clear.setVisibility(View.GONE);
+        }
     }
+
+
     //side drawer buttons
     @Override public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.side_drawer, menu);
@@ -198,8 +404,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-
-
     /**
      *
      *
@@ -209,7 +413,6 @@ public class MainActivity extends AppCompatActivity
      * @return int [] []
      *
      */
-
 
     int [] [] randomGridArray (int n) {
         // Set up with red, blue, and gray squares
@@ -294,11 +497,30 @@ public class MainActivity extends AppCompatActivity
     public void onTouchUp (int downX, int downY, int upX, int upY) {
         GameBoardView gv = getGridView ();
         if (gv == null) return;
-
+		
+		if(water_flag)
+        {
+            if (gv.gridValue(upX, upY) > 2)
+            {
+                return;
+            }
+            watered.add(new Pair<>(upX, upY));
+            int oldValue = gv.gridValue (upX, upY);
+            int newValue = oldValue + 3;
+            gv.setGridValue (upX, upY, newValue);
+            gv.invalidate ();
+        }
+        if (!edit_flag)
+        {
+            return;
+        }
+		
         boolean isSelected = gv.isSelected (upX, upY);
         gv.clearSelections ();
         if (!isSelected) gv.toggleSelection (upX, upY);
-        gv.invalidate ();
+		selected_x = upX;
+        selected_y = upY;
+        gv.invalidate();
 
         setXY(upX, upY);
 
