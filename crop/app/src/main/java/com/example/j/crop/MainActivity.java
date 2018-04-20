@@ -20,6 +20,7 @@ import android.view.MenuItem;
 
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 /**
  * This activity displays a grid of image squares that represent a game board.
@@ -53,8 +54,8 @@ public class MainActivity extends AppCompatActivity
      */
 
     private int [][] pGrid;
-    private int x;
-    private int y;
+    private int x,y = 0;
+   // private int y;
 
     /**
      * Get the value of the Grid property.
@@ -156,12 +157,19 @@ public class MainActivity extends AppCompatActivity
                         switch (menuItem.getItemId()) {
                             case R.id.notes:
 
-                                Intent intent = new Intent(MainActivity.this, PlantNotes.class);
+                                if(x == 0 && y == 0) //if no plant was selected, don't start the next activity
+                                {
+                                    Toast.makeText(MainActivity.this, "No Plant Selected", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
 
-                                intent.putExtra("x", x);
-                                intent.putExtra("y", y);
+                                    intent.putExtra("x", x);
+                                    intent.putExtra("y", y);
 
-                                startActivity(intent); break;
+                                    startActivity(intent);
+                                    break;
+                                }
 
                            // case R.id.
                         }
@@ -175,13 +183,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private int getX() {
-        return this.x;
-    }
-
-    private int getY() {
-        return this.y;
-    }
     //side drawer buttons
     @Override public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.side_drawer, menu);
@@ -198,8 +199,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-
-
     /**
      *
      *
@@ -209,7 +208,6 @@ public class MainActivity extends AppCompatActivity
      * @return int [] []
      *
      */
-
 
     int [] [] randomGridArray (int n) {
         // Set up with red, blue, and gray squares
