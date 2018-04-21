@@ -40,7 +40,7 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
     private NotesAdapter notesAdapter;
     private int pos;
     private Button photoIcon;
-
+    private Button exit;
     private static int x;
     private static int y;
 
@@ -111,6 +111,8 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
         notes = new ArrayList<>();
         notesAdapter = new NotesAdapter(notes,AddNoteActivity.this);
         recyclerView.setAdapter(notesAdapter);
+        exit = (Button) findViewById(R.id.exit);
+
 
         photoIcon.setOnClickListener(new View.OnClickListener() { //starting the photo page
             public void onClick(View v)
@@ -123,6 +125,13 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
                 startActivity(intent);
             }
         });
+        exit.setOnClickListener(new View.OnClickListener() { //go back to plots
+            public void onClick(View v)
+            {
+                finish();
+            }
+        });
+
     }
 
 
