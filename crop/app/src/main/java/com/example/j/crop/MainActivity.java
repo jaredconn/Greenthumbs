@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity
                         switch (menuItem.getItemId()) {
                             case R.id.notes:
 
-                                if(x == 0 && y == 0) //if no plant was selected, don't start the next activity
+                                if(x == 0 && y == 0) //if no plant was selected, don't start the next activity //TODO DEBUG: IF RANDOM SPOT IS SELECTED, STILL OPENS NOTES
                                 {
                                     Toast.makeText(MainActivity.this, "No Plant Selected", Toast.LENGTH_SHORT).show();
                                 }

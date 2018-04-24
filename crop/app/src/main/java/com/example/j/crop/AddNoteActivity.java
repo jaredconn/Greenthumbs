@@ -81,6 +81,8 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
 
                // Log.e("AddNoteActivity ", "plant_id888888888: "+plant_id );
 
+                //activityReference.get().noteDatabase.databaseFunc().updateNoteIds(lock_id);
+
                 return activityReference.get().noteDatabase.databaseFunc().getNotesForPlant(plant_id);
             }
             else
@@ -134,8 +136,6 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
 
     }
 
-
-
     private View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -173,7 +173,12 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
                     public void onClick(DialogInterface dialogInterface, int i) {
                         switch (i){
                             case 0:
-                                noteDatabase.databaseFunc().deleteNote(notes.get(pos));
+                                AddNoteActivity.this.pos = pos;
+                                int holder = pos;
+                                startActivityForResult(
+                                        new Intent(AddNoteActivity.this,
+                                                AddNote.class).putExtra("delete",notes.get(holder)),
+                                        100);
                                 notes.remove(pos);
                                 listVisibility();
                                 break;
@@ -189,12 +194,10 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
                 }).show();
 
     }
-
-    private void listVisibility(){
+    private void listVisibility() {
         int emptyMsgVisibility = View.GONE;
-        if (notes.size() == 0){ // no item to display
-            if (textViewMsg.getVisibility() == View.GONE)
-                emptyMsgVisibility = View.VISIBLE;
+        if (notes.size() == 0) { // no item to display
+            if (textViewMsg.getVisibility() == View.GONE) emptyMsgVisibility = View.VISIBLE;
         }
         textViewMsg.setVisibility(emptyMsgVisibility);
         notesAdapter.notifyDataSetChanged();
