@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity
     private boolean edit_flag = false;
 
     ArrayList<Pair<Integer,Integer>> watered = new ArrayList<>();
+
+    ArrayList<Pair<Integer,Integer>> watered = new ArrayList<>();
 	
     static public final int NumSquaresOnGridSide = 10; //changed from 4 during merge - chris
     static public final int NumSquaresOnViewSide = 8;
@@ -255,7 +257,7 @@ public class MainActivity extends AppCompatActivity
         //end chris code add
 
 
-//handles button clicks inside of side drawer
+        //handles button clicks inside of side drawer
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -562,7 +564,7 @@ public class MainActivity extends AppCompatActivity
         {
             return;
         }
-		
+
         boolean isSelected = gv.isSelected (upX, upY);
         gv.clearSelections ();
         if (!isSelected) gv.toggleSelection (upX, upY);

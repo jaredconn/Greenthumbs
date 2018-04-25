@@ -58,7 +58,7 @@ public class GameBoardView extends PanZoomView {
     // from a constructor.
 
     private int [] [] mGrid;                 // 0 .. NumRedBlueTypes-1
-    private int [] [] mGridSelect;           // 0 = normal; 1 = selected
+    private int [] [] mGridSelect; // 0 = normal; 1 = selected
 
     private Bitmap [] mSelectedBitmaps;
 
@@ -229,6 +229,7 @@ public class GameBoardView extends PanZoomView {
         // Get up the bitmaps to be displayed. Get the grid.
         Bitmap [] bitmaps = getBitmapsArray ();        // also could do "bitmaps = mBitmaps".
         Bitmap [] selectedBitmaps = mSelectedBitmaps;
+
         int [] [] grid = getGridArray ();
 
         //
