@@ -39,13 +39,23 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
     private List<Note> notes;
     private NotesAdapter notesAdapter;
     private int pos;
+    private Button photoIcon;
+
+    private static int x;
+    private static int y;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notes_recycler);
-        initializeVies();
+
+
+        Bundle intent = getIntent().getExtras();
+        x = intent.getInt("x");
+        y = intent.getInt("y");
+
+        initializeViews();
         displayList();
     }
 
@@ -65,8 +75,14 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
 
         @Override
         protected List<Note> doInBackground(Void... voids) {
-            if (activityReference.get()!=null)
-                return activityReference.get().noteDatabase.databaseFunc().getNotes();
+            if (activityReference.get()!=null) {
+
+                long plant_id = activityReference.get().noteDatabase.databaseFunc().getPlantId(x, y);
+
+               // Log.e("AddNoteActivity ", "plant_id888888888: "+plant_id );
+
+                return activityReference.get().noteDatabase.databaseFunc().getNotesForPlant(plant_id);
+            }
             else
                 return null;
         }
@@ -83,7 +99,7 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
         }
     }
 
-    private void initializeVies(){
+    private void initializeViews(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         textViewMsg =  (TextView) findViewById(R.id.tv__empty);
@@ -91,15 +107,39 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
         fab.setOnClickListener(listener);
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(AddNoteActivity.this));
+        photoIcon = (Button) findViewById(R.id.uploadPhoto);
         notes = new ArrayList<>();
         notesAdapter = new NotesAdapter(notes,AddNoteActivity.this);
         recyclerView.setAdapter(notesAdapter);
+
+        photoIcon.setOnClickListener(new View.OnClickListener() { //starting the photo page
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(AddNoteActivity.this, PhotoViewer.class);
+
+                intent.putExtra("x", x);
+                intent.putExtra("y", y);
+
+                startActivity(intent);
+            }
+        });
     }
+
+
 
     private View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            startActivityForResult(new Intent(AddNoteActivity.this, AddNote.class),100);
+
+            Intent intent = new Intent(AddNoteActivity.this, AddNote.class);
+
+            intent.putExtra("x", x);
+            intent.putExtra("y", y);
+
+          //  Log.e("AddNoteActivity   ", "testing x and y: "+x + " " +y + "" );
+
+            startActivityForResult(intent, 100);
+
         }
     };
 
@@ -134,7 +174,6 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
                                         new Intent(AddNoteActivity.this,
                                                 AddNote.class).putExtra("note",notes.get(pos)),
                                         100);
-
                                 break;
                         }
                     }

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 /**
  * Created by J on 4/9/2018.
@@ -19,12 +20,15 @@ import java.lang.ref.WeakReference;
 
 public class AddNote extends AppCompatActivity {
 
-    // private AppDatabase mDb;
-    // private TextView notes;
+    static int x;
+    static int y;
+
     /*database*/
     private AppDatabase plantDatabase;
     private Note note;
     private boolean update;
+    private boolean firstNoteCreated = false;
+
 
     private TextInputEditText et_title, et_content;
 
@@ -33,54 +37,73 @@ public class AddNote extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_notes);
 
-        //Intent intent = getIntent();
+        /*the coordinates for the query*/
+        Bundle intent = getIntent().getExtras();
+        x = intent.getInt("x");
+        y = intent.getInt("y");
 
     et_title = findViewById(R.id.et_title);
     et_content = findViewById(R.id.et_content);
 
     plantDatabase = AppDatabase.getInstance(AddNote.this);
 
-    final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "notedb.db").build();
+    final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "plantdb.db").build();
 
 
     Button button = findViewById(R.id.but_save);
 
-        if ( (note = (Note) getIntent().getSerializableExtra("note"))!=null ){
-        getSupportActionBar().setTitle("Update Note");
-        update = true;
-        button.setText("Update");
-        et_title.setText(note.getTitle());
-        et_content.setText(note.getContent());
-    }
-
-
-    //AppDatabase.databaseFunc().updateNote(note);
+        if ( (note = (Note) getIntent().getSerializableExtra("note"))!=null ) {
+            getSupportActionBar().setTitle("Update Note");
+            update = true;
+            button.setText("Update");
+            et_title.setText(note.getTitle());
+            et_content.setText(note.getContent());
+        }
 
     //upload note
         button.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             // fetch data and create note object
+
+            if (firstNoteCreated) { //don't do this the first time because there are no notes - null reference
+                Thread thread = new Thread(new Runnable() {
+                    public void run() {
+                        // code goes here.
+                        db.databaseFunc().updateNote(note);
+                    }
+                });
+                thread.start();
+            }
+
             if (update) {
                 note.setContent(et_content.getText().toString());
                 note.setTitle(et_title.getText().toString());
-                db.databaseFunc().updateNote(note);
-                setResult(note,2);
+
+                Thread thread = new Thread(new Runnable() {
+                    public void run() {
+                        // code goes here.
+                        db.databaseFunc().updateNote(note);
+                    }
+                });
+                thread.start();
+                setResult(note, 2);
+
             } else {
                 note = new Note(et_content.getText().toString(), et_title.getText().toString());
                 new InsertTask(AddNote.this, note).execute();
+                firstNoteCreated = true;
+                Thread thread = new Thread(new Runnable() {
+                    public void run() { //do this every time so that the plant_id is saved
+                        // code goes here.
+                        db.databaseFunc().updateNote(note);
+                    }
+                });
+                thread.start();
             }
-        }});
-
-
-/*
-        final EditText et = (EditText) findViewById(R.id.editText);
-        //display the notes from Database
-        notes = findViewById(R.id.notes);
-        */
-
-
-}
+            }
+        });
+    }
 
 
     private void setResult(Note note, int flag){
@@ -88,11 +111,7 @@ public class AddNote extends AppCompatActivity {
         finish();
     }
 
-//display the notes from Database
-// notes = findViewById(R.id.notes);
-
-
-private static class InsertTask extends AsyncTask<Void, Void, Boolean> {
+static class InsertTask extends AsyncTask<Void, Void, Boolean> {
 
     private WeakReference<AddNote> activityReference;
     private Note note;
@@ -108,7 +127,10 @@ private static class InsertTask extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... objs) {
         long j = activityReference.get().plantDatabase.databaseFunc().insertNote(note);
         note.setNote_id(j);
-        Log.e("ID ", "doInBackground: "+j );
+        long p_id = activityReference.get().plantDatabase.databaseFunc().getPlantId(x,y);
+        note.setPlant_id(p_id);
+
+        //Log.e("ID ", "doInBackground: "+j );
         return true;
     }
 
@@ -122,5 +144,3 @@ private static class InsertTask extends AsyncTask<Void, Void, Boolean> {
     }
 }
 }
-
-

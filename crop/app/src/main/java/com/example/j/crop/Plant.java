@@ -4,6 +4,8 @@ package com.example.j.crop;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+
+import java.io.Serializable;
 /**import android.graphics.Bitmap;*/
 
 /**
@@ -11,66 +13,60 @@ import android.arch.persistence.room.PrimaryKey;
  * Bases on the link above.
  * Created by lhn41 on 3/28/2018.
  */
-@Entity(tableName = "plant")
-public class Plant
+@Entity(tableName ="plant")
+public class Plant implements Serializable
 {
-    @PrimaryKey(autoGenerate = true)
-    private int plantID;
 
     @ColumnInfo(name = "plantName")
-    private String plantName;
+    private String plant_name;
 
-    /*private String plantStrain;
-    private Bitmap plantPic;
-    private String plantNotes;*/
+    private long note_id;
 
-    public void setPlantID(int id)
+    @PrimaryKey(autoGenerate = true)
+    private long plant_id;
+
+    private int x, y;
+
+    public void setPlant_name(String name)
     {
-        plantID = id;
+        plant_name = name;
     }
 
-    public void setPlantName(String name)
+
+    public String getPlant_name()
     {
-        plantName = name;
+        return plant_name;
     }
 
-    /*public void setPlantPic(Bitmap pic)
-    {
-        plantPic = pic;
+    public long getNote_id() {
+        return note_id;
     }
 
-    public void setPlantStrain(String strain)
-    {
-        plantStrain = strain;
+    public void setNote_id(long note_id) {
+        this.note_id = note_id;
     }
 
-    public void setPlantNotes(String notes)
-    {
-        plantNotes = notes;
-    }*/
-
-    public int getPlantID()
-    {
-        return plantID;
+    public long getPlant_id() {
+        return plant_id;
     }
 
-    public String getPlantName()
-    {
-        return plantName;
+    public void setPlant_id(long plant_id) {
+        this.plant_id = plant_id;
     }
 
-    /*public String getPlantStrain()
-    {
-        return plantStrain;
-    }*/
+    public int getX() {
+        return x;
+    }
 
-    /*public String getPlantNotes()
-    {
-        return plantNotes;
-    }*/
+    public void setX(int x) {
+        this.x = x;
+    }
 
-    /*public Bitmap getPlantPic()
-    {
-        return plantPic;
-    }*/
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
 }
