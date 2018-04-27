@@ -25,7 +25,7 @@ public class GameBoardView extends PanZoomView {
     static public final int DefaultNumSquaresAlongSide = 9;
     static public final int DefaultNumSquaresAlongCanvas = 19;
     static public final float CanvasSizeMultiplier = (float) DefaultNumSquaresAlongCanvas / (float) DefaultNumSquaresAlongSide;
-    static public final int NumRedBlueTypes = 3;     // Used with simple squares demo; types: blank, red, blue
+    static public final int NumRedBlueTypes = 7;     // Used with simple squares demo; types: blank, red, blue
 
 
     // Variables that control placement and translation of the canvas.
@@ -58,7 +58,7 @@ public class GameBoardView extends PanZoomView {
     // from a constructor.
 
     private int [] [] mGrid;                 // 0 .. NumRedBlueTypes-1
-    private int [] [] mGridSelect;           // 0 = normal; 1 = selected
+    private int [] [] mGridSelect; // 0 = normal; 1 = selected
 
     private Bitmap [] mSelectedBitmaps;
 
@@ -229,6 +229,7 @@ public class GameBoardView extends PanZoomView {
         // Get up the bitmaps to be displayed. Get the grid.
         Bitmap [] bitmaps = getBitmapsArray ();        // also could do "bitmaps = mBitmaps".
         Bitmap [] selectedBitmaps = mSelectedBitmaps;
+
         int [] [] grid = getGridArray ();
 
         //

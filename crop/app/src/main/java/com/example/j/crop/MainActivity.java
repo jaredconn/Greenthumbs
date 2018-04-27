@@ -1,6 +1,8 @@
 package com.example.j.crop;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -58,13 +60,16 @@ public class MainActivity extends AppCompatActivity
 
     ArrayList<Pair<Integer,Integer>> watered = new ArrayList<>();
 	
-    static public final int NumSquaresOnGridSide = 4;
+    static public final int NumSquaresOnGridSide = 10; //changed from 4 during merge - chris
     static public final int NumSquaresOnViewSide = 8;
     static public final int NumRedBlueTypes = 3;     // Used with simple squares demo; types: blank, red, blue
 
     private DrawerLayout mDrawerLayout;
 
     static private Random mRandomObject = new Random (System.currentTimeMillis ());
+
+    private AppDatabase plantDatabase;
+    private Note note;
 
 /* Property Grid */
     /**
@@ -250,7 +255,7 @@ public class MainActivity extends AppCompatActivity
         //end chris code add
 
 
-//handles button clicks inside of side drawer
+        //handles button clicks inside of side drawer
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -281,6 +286,7 @@ public class MainActivity extends AppCompatActivity
 
                                     intent.putExtra("x", x);
                                     intent.putExtra("y", y);
+                                    intent.putExtra("watered", 0);
 
                                     startActivity(intent);
                                     break;
@@ -291,6 +297,10 @@ public class MainActivity extends AppCompatActivity
 
                             case R.id.nav_water_mode:
                                 enterWaterMode();
+                                break;
+
+                            case R.id.nav_about:
+                                startActivity(new Intent(MainActivity.this, AboutActivity.class));
                                 break;
                            // case R.id.
                         }
@@ -317,9 +327,18 @@ public class MainActivity extends AppCompatActivity
 
         if (water_flag)
         {
-            //TODO: UPDATE DATABASE HERE WITH PLANT WATERED. WATERED PLANTS ARE IN ARRAYLIST watered
-            //TODO: ALSO CANNOT WATER DIRT OR PROGRAM CRASHES
-            //TODO: MAYBE MAKE THIS A FUNCTION?
+            //note = new Note(currentTime.toString(), " plant got watered");
+
+            for (Pair<Integer, Integer> p : watered ) { //Starts the "for" loop, allowing us go through the whole water array
+                Intent intent = new Intent(MainActivity.this, AddNote.class);
+
+                intent.putExtra("x", p.first);
+                intent.putExtra("y", p.second);
+                intent.putExtra("watered", 1);//Sent a value of 1 to the next activity, for a "if" statement
+
+                startActivity(intent);
+            }
+
             water_flag = false;
 
             //need to reset icons in watered arraylist
@@ -344,12 +363,20 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
     void enterEditMode()
     {
         if (water_flag) {
-            //TODO: UPDATE DATABASE HERE WITH PLANT WATERED. WATERED PLANTS ARE IN ARRAYLIST watered
-            //TODO: ALSO CANNOT WATER DIRT OR PROGRAM CRASHES
-            //TODO: MAYBE MAKE THIS A FUNCTION?
+
+            for (Pair<Integer, Integer> p : watered ) { //Starts the "for" loop, allowing us go through the whole water array
+                Intent intent = new Intent(MainActivity.this, AddNote.class);
+
+                intent.putExtra("x", p.first);
+                intent.putExtra("y", p.second);
+                intent.putExtra("watered", 1); //Sent a value of 1 to the next activity, for a "if" statement
+
+                startActivity(intent);
+            }
             water_flag = false;
 
             //need to reset icons in watered arraylist
@@ -419,7 +446,8 @@ public class MainActivity extends AppCompatActivity
         int [][] grid = new int [n] [n];
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++) {
-                int index = randomInt (0, NumRedBlueTypes-1);    // index indicates which image to use
+                int index = 6;
+                //int index = randomInt (0, NumRedBlueTypes-1);    // index indicates which image to use
                 grid [i][j] = index;
             }
         return grid;
@@ -444,7 +472,6 @@ public class MainActivity extends AppCompatActivity
      * Use getGrid to access that object.
      *
      * @param n int - grid size is N x N squares
-     * @param maxValue
      * @return void
      */
 
@@ -514,7 +541,7 @@ public class MainActivity extends AppCompatActivity
         {
             return;
         }
-		
+
         boolean isSelected = gv.isSelected (upX, upY);
         gv.clearSelections ();
         if (!isSelected) gv.toggleSelection (upX, upY);
