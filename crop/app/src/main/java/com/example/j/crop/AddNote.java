@@ -72,15 +72,7 @@ public class AddNote extends AppCompatActivity {
         public void onClick(View view) {
             // fetch data and create note object
 
-            if (firstNoteCreated) { //don't do this the first time because there are no notes - null reference
-                Thread thread = new Thread(new Runnable() {
-                    public void run() {
-                        // code goes here.
-                        db.databaseFunc().updateNote(note);
-                    }
-                });
-                thread.start();
-            }
+
             if (update) {
                 note.setContent(et_content.getText().toString());
                 note.setTitle(et_title.getText().toString());
@@ -95,19 +87,8 @@ public class AddNote extends AppCompatActivity {
                 setResult(note, 2);
 
             }
-            else {
-                note = new Note(et_content.getText().toString(), et_title.getText().toString());
-                new InsertTask(AddNote.this, note).execute();
-                firstNoteCreated = true;
-                Thread thread = new Thread(new Runnable() {
-                    public void run() { //do this every time so that the plant_id is saved
-                        // code goes here.
-                        db.databaseFunc().updateNote(note);
-                    }
-                });
-                thread.start();
-            }
-            if(watered == 1){
+
+            else if(watered == 1){
                 Date currentTime = Calendar.getInstance().getTime();
                 note = new Note(currentTime.toString(), "plant been watered");
                 new InsertTask(AddNote.this, note).execute();
@@ -120,8 +101,22 @@ public class AddNote extends AppCompatActivity {
                 });
                 thread.start();
             }
+
+            else {
+                note = new Note(et_content.getText().toString(), et_title.getText().toString());
+                new InsertTask(AddNote.this, note).execute();
+                firstNoteCreated = true;
+                Thread thread = new Thread(new Runnable() {
+                    public void run() { //do this every time so that the plant_id is saved
+                        // code goes here.
+                        db.databaseFunc().updateNote(note);
+                    }
+                });
+                thread.start();
             }
-        });
+            }
+        }
+        );
     }
 
 
