@@ -6,9 +6,10 @@
         android:minSdkVersion="19"
         android:targetSdkVersion="24" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera2.full" />
 
     <application
         android:allowBackup="true"
@@ -49,6 +50,12 @@
         <activity
             android:name=".AddNote"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity android:name=".AddNote"
+            android:theme="@style/Theme.AppCompat.Light" />
+        <activity android:name=".AddPlant" />
+        <activity android:name=".FetchPhoto"/>
+
         <activity android:name=".AboutActivity"></activity>
     </application>
 

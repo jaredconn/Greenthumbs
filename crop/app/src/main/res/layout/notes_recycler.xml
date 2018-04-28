@@ -36,15 +36,26 @@
         android:id="@+id/include" />
 
     <Button
-        android:id="@+id/uploadPhoto"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
+        android:id="@+id/exit"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
         android:layout_weight="1.0"
-        android:background="@drawable/camera_icon"
+        android:background="@drawable/exit"
         app:layout_anchor="@+id/include"
         app:layout_anchorGravity="right|bottom" />
+
+    <Button
+        android:id="@+id/uploadPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:layout_weight="1.0"
+        android:text="View Plant Photos"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="bottom|center" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
