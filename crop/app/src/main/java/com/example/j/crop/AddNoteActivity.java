@@ -119,7 +119,7 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
         photoIcon.setOnClickListener(new View.OnClickListener() { //starting the photo page
             public void onClick(View v)
             {
-                Intent intent = new Intent(AddNoteActivity.this, PhotoViewer.class);
+                Intent intent = new Intent(AddNoteActivity.this, FetchPhoto.class);
 
                 intent.putExtra("x", x);
                 intent.putExtra("y", y);
