@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c5c8e15ea6cb9f0b065dcdc39e8a8eb8",
+    "identityHash": "acd58238811723890916b6e510558c28",
     "entities": [
       {
         "tableName": "plant",
@@ -50,7 +50,7 @@
       },
       {
         "tableName": "notes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`note_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `note_content` TEXT, `title` TEXT, `date` INTEGER, `plant_id` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`note_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `note_content` TEXT, `title` TEXT, `date` INTEGER, `plant_id` INTEGER NOT NULL, `lock_id` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "note_id",
@@ -81,6 +81,12 @@
             "columnName": "plant_id",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "lock_id",
+            "columnName": "lock_id",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -91,11 +97,43 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "photo",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Photo` TEXT, `plant_id` INTEGER NOT NULL, `photo_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "path",
+            "columnName": "Photo",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "plant_id",
+            "columnName": "plant_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "photo_id",
+            "columnName": "photo_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "photo_id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c5c8e15ea6cb9f0b065dcdc39e8a8eb8\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"acd58238811723890916b6e510558c28\")"
     ]
   }
 }

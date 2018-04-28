@@ -23,6 +23,7 @@ public class Note implements Serializable{
     private long note_id;
 
     @ColumnInfo(name = "note_content") // column name will be "note_content" instead of "content" in table
+
     private String content;
 
     private String title;
@@ -30,6 +31,8 @@ public class Note implements Serializable{
     private Date date;
 
     private long plant_id;
+
+    private long lock_id;
 
 
 //    public Note(int note_id, String content, String title, Date date) {
@@ -80,6 +83,14 @@ public class Note implements Serializable{
         this.title = title;
     }
 
+    public void setLock_id (long lock_id) {
+        this.lock_id = lock_id;
+    }
+    public long getLock_id () {
+        return lock_id;
+    }
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -109,6 +120,7 @@ public class Note implements Serializable{
                 ", title='" + title + '\'' +
                 ", date=" + date +
                 ", plant_id=" + plant_id +
+                        ", lock_id=" + lock_id +
                 '}';
     }
 

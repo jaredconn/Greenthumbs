@@ -25,6 +25,9 @@ public interface DatabaseFunctions {
     @Insert
     long insertNote(Note notes);
 
+    @Insert
+    long insertPhoto(Photo photo);
+
     @Update
     void updateNote(Note repos);
 

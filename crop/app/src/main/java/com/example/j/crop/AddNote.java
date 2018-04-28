@@ -1,6 +1,7 @@
 package com.example.j.crop;
 
 import android.arch.persistence.room.Room;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
@@ -26,12 +28,16 @@ public class AddNote extends AppCompatActivity {
     static int y;
     static int watered;
 
+
     /*database*/
     private AppDatabase plantDatabase;
     private Note note;
     private boolean update;
+    private boolean delete;
     private boolean firstNoteCreated = false;
-    //private boolean isWatered = false;
+
+    private static long j = 1;
+
 
 
     private TextInputEditText et_title, et_content;
@@ -52,11 +58,20 @@ public class AddNote extends AppCompatActivity {
 
     plantDatabase = AppDatabase.getInstance(AddNote.this);
 
-    final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "plantdb.db").build();
-
-
     Button button = findViewById(R.id.but_save);
 
+        if ( (note = (Note) getIntent().getSerializableExtra("delete"))!=null ) {
+            getSupportActionBar().setTitle("Delete Note");
+            delete = true;
+            button.setText("Delete This Note");
+            et_title.setText(note.getTitle());
+            et_content.setText(note.getContent());
+            note.setNote_id(note.getLock_id());
+            plantDatabase.databaseFunc().deleteNote(note);
+            finish();
+
+        }
+        
         if ( (note = (Note) getIntent().getSerializableExtra("note"))!=null && watered == 0 ) { // added the "&&" so that the program doesn't
                                                                                                         //think the watered is for a update
             getSupportActionBar().setTitle("Update Note");
@@ -66,40 +81,27 @@ public class AddNote extends AppCompatActivity {
             et_content.setText(note.getContent());
         }
 
-    //upload note
+        //upload note
         button.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            // fetch data and create note object
 
 
             if (update) {
                 note.setContent(et_content.getText().toString());
                 note.setTitle(et_title.getText().toString());
-
-                Thread thread = new Thread(new Runnable() {
-                    public void run() {
-                        // code goes here.
-                        db.databaseFunc().updateNote(note);
-                    }
-                });
-                thread.start();
-                setResult(note, 2);
+                note.setNote_id(note.getLock_id());//each time the add note activity is started, old note_id is reset to 0, making the update and delete functions not work. lock_id remembers the initial note_id
+                plantDatabase.databaseFunc().updateNote(note);
+                setResult(note,2);
 
             }
 
             else if(watered == 1){
                 Date currentTime = Calendar.getInstance().getTime();
                 note = new Note(currentTime.toString(), "plant been watered");
-                new InsertTask(AddNote.this, note).execute();
                 firstNoteCreated = true;
-                Thread thread = new Thread(new Runnable() {
-                    public void run() { //do this every time so that the plant_id is saved
-                        // code goes here.
-                        db.databaseFunc().updateNote(note);
-                    }
-                });
-                thread.start();
+                new InsertTask(AddNote.this, note).execute();
+
             }
 
             else {
@@ -139,12 +141,18 @@ static class InsertTask extends AsyncTask<Void, Void, Boolean> {
     // doInBackground methods runs on a worker thread
     @Override
     protected Boolean doInBackground(Void... objs) {
+
         long j = activityReference.get().plantDatabase.databaseFunc().insertNote(note);
+        Log.e("AddNote   ", "testing Note ID: "+ j);
         note.setNote_id(j);
+        note.setLock_id(j);
+
         long p_id = activityReference.get().plantDatabase.databaseFunc().getPlantId(x,y);
         note.setPlant_id(p_id);
+        activityReference.get().plantDatabase.databaseFunc().updateNote(note);
 
-        //Log.e("ID ", "doInBackground: "+j );
+       // j++;
+        Log.e("ID ", "doInBackground: "+j );
         return true;
     }
 
@@ -156,5 +164,5 @@ static class InsertTask extends AsyncTask<Void, Void, Boolean> {
             activityReference.get().finish();
         }
     }
-}
+    }
 }

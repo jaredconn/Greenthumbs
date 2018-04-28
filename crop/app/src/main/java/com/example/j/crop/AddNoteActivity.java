@@ -40,7 +40,7 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
     private NotesAdapter notesAdapter;
     private int pos;
     private Button photoIcon;
-
+    private Button exit;
     private static int x;
     private static int y;
 
@@ -81,6 +81,8 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
 
                // Log.e("AddNoteActivity ", "plant_id888888888: "+plant_id );
 
+                //activityReference.get().noteDatabase.databaseFunc().updateNoteIds(lock_id);
+
                 return activityReference.get().noteDatabase.databaseFunc().getNotesForPlant(plant_id);
             }
             else
@@ -111,11 +113,13 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
         notes = new ArrayList<>();
         notesAdapter = new NotesAdapter(notes,AddNoteActivity.this);
         recyclerView.setAdapter(notesAdapter);
+        exit = (Button) findViewById(R.id.exit);
+
 
         photoIcon.setOnClickListener(new View.OnClickListener() { //starting the photo page
             public void onClick(View v)
             {
-                Intent intent = new Intent(AddNoteActivity.this, PhotoViewer.class);
+                Intent intent = new Intent(AddNoteActivity.this, FetchPhoto.class);
 
                 intent.putExtra("x", x);
                 intent.putExtra("y", y);
@@ -123,9 +127,14 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
                 startActivity(intent);
             }
         });
+        exit.setOnClickListener(new View.OnClickListener() { //go back to plots
+            public void onClick(View v)
+            {
+                finish();
+            }
+        });
+
     }
-
-
 
     private View.OnClickListener listener = new View.OnClickListener() {
         @Override
@@ -164,7 +173,12 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
                     public void onClick(DialogInterface dialogInterface, int i) {
                         switch (i){
                             case 0:
-                                noteDatabase.databaseFunc().deleteNote(notes.get(pos));
+                                AddNoteActivity.this.pos = pos;
+                                int holder = pos;
+                                startActivityForResult(
+                                        new Intent(AddNoteActivity.this,
+                                                AddNote.class).putExtra("delete",notes.get(holder)),
+                                        100);
                                 notes.remove(pos);
                                 listVisibility();
                                 break;
@@ -180,12 +194,10 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
                 }).show();
 
     }
-
-    private void listVisibility(){
+    private void listVisibility() {
         int emptyMsgVisibility = View.GONE;
-        if (notes.size() == 0){ // no item to display
-            if (textViewMsg.getVisibility() == View.GONE)
-                emptyMsgVisibility = View.VISIBLE;
+        if (notes.size() == 0) { // no item to display
+            if (textViewMsg.getVisibility() == View.GONE) emptyMsgVisibility = View.VISIBLE;
         }
         textViewMsg.setVisibility(emptyMsgVisibility);
         notesAdapter.notifyDataSetChanged();
