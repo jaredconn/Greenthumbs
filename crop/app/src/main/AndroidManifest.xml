@@ -49,11 +49,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".AddNote"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
-        <activity android:name=".AddNote"
             android:theme="@style/Theme.AppCompat.Light" />
-        <activity android:name=".AddPlant" />
         <activity android:name=".FetchPhoto"/>
 
         <activity android:name=".AboutActivity"></activity>

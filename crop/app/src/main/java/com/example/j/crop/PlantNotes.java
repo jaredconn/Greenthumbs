@@ -50,7 +50,7 @@ public class PlantNotes extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+/*
         //display the current time
         final TextView tv = (TextView) findViewById(R.id.tv);
         final Handler someHandler = new Handler(getMainLooper());
@@ -61,5 +61,5 @@ public class PlantNotes extends AppCompatActivity {
                 someHandler.postDelayed(this, 1000);
             }
         }, 10);
-    }
-}
+    }*/
+}}

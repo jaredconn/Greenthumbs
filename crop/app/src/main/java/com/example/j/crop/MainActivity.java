@@ -291,12 +291,18 @@ public class MainActivity extends AppCompatActivity
                                     startActivity(intent);
                                     break;
                                 }
-						   case R.id.nav_edit_plot:
+                            case R.id.nav_edit_plot:
                                 enterEditMode();
                                 break;
 
                             case R.id.nav_water_mode:
+
+                                menuItem.setTitle("Done Watering");
+
                                 enterWaterMode();
+
+
+
                                 break;
 
                             case R.id.nav_about:
@@ -316,6 +322,8 @@ public class MainActivity extends AppCompatActivity
 
     void enterWaterMode()
     {
+        //todo change side drawer watering mode button when done watering
+        //MenuItem done_watered = navigationView.findItem(R.id.nav_water_mode);
         GameBoardView gv = getGridView ();
         if (edit_flag)
         {
@@ -356,6 +364,8 @@ public class MainActivity extends AppCompatActivity
             watered.clear();
 
             //clear edit mode if in edit mode
+
+
             edit_flag = false;
             gv.clearSelections();
             fab_swap.setVisibility(View.GONE);

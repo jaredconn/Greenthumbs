@@ -26,7 +26,7 @@ public class AddNote extends AppCompatActivity {
 
     static int x;
     static int y;
-    static int watered;
+    static int watered = 0;
 
 
     /*database*/
@@ -60,6 +60,16 @@ public class AddNote extends AppCompatActivity {
 
     Button button = findViewById(R.id.but_save);
 
+
+            if(watered == 1){
+            Date currentTime = Calendar.getInstance().getTime();
+            note = new Note(currentTime.toString(), "plant been watered");
+            new InsertTask(AddNote.this, note).execute();
+            watered = 0;
+            finish();
+
+        }
+
         if ( (note = (Note) getIntent().getSerializableExtra("delete"))!=null ) {
             getSupportActionBar().setTitle("Delete Note");
             delete = true;
@@ -74,6 +84,7 @@ public class AddNote extends AppCompatActivity {
         
         if ( (note = (Note) getIntent().getSerializableExtra("note"))!=null && watered == 0 ) { // added the "&&" so that the program doesn't
                                                                                                         //think the watered is for a update
+           // note.setNote_id(note.getLock_id());
             getSupportActionBar().setTitle("Update Note");
             update = true;
             button.setText("Update");
@@ -96,25 +107,9 @@ public class AddNote extends AppCompatActivity {
 
             }
 
-            else if(watered == 1){
-                Date currentTime = Calendar.getInstance().getTime();
-                note = new Note(currentTime.toString(), "plant been watered");
-                firstNoteCreated = true;
-                new InsertTask(AddNote.this, note).execute();
-
-            }
-
             else {
                 note = new Note(et_content.getText().toString(), et_title.getText().toString());
                 new InsertTask(AddNote.this, note).execute();
-                firstNoteCreated = true;
-                Thread thread = new Thread(new Runnable() {
-                    public void run() { //do this every time so that the plant_id is saved
-                        // code goes here.
-                        db.databaseFunc().updateNote(note);
-                    }
-                });
-                thread.start();
             }
             }
         }
