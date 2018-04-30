@@ -105,13 +105,7 @@ public class AddNote extends AppCompatActivity {
                 note = new Note(currentTime.toString(), "plant been watered");
                 new InsertTask(AddNote.this, note).execute();
                 firstNoteCreated = true;
-                Thread thread = new Thread(new Runnable() {
-                    public void run() { //do this every time so that the plant_id is saved
-                        // code goes here.
-                        db.databaseFunc().updateNote(note);
-                    }
-                });
-                thread.start();
+                plantDatabase.databaseFunc().updateNote(note);
             }
             }
         });
