@@ -1,6 +1,7 @@
 package com.example.j.crop;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -18,11 +19,13 @@ import android.util.Log;
 
 public class GameBoardView extends PanZoomView {
 
+    private Plant plant;
+
 
     static public final int DefaultNumSquaresAlongSide = 9;
     static public final int DefaultNumSquaresAlongCanvas = 19;
     static public final float CanvasSizeMultiplier = (float) DefaultNumSquaresAlongCanvas / (float) DefaultNumSquaresAlongSide;
-    static public final int NumRedBlueTypes = 7;     // Used with simple squares demo; types: blank, red, blue
+    static public final int NumRedBlueTypes = 22;     // Used with simple squares demo; types: blank, red, blue
 
 
     // Variables that control placement and translation of the canvas.
@@ -39,16 +42,54 @@ public class GameBoardView extends PanZoomView {
     private Rect  mDestRect;
     private RectF mDestRectF;
 
-    static private final int [] mUnselectedImageIds = {R.drawable.eggplant_icon,
+    static private final int [] mUnselectedImageIds = {
+            R.drawable.broccoli_icon,
+            R.drawable.carrots_icon,
+            R.drawable.cucumber_icon,
+            R.drawable.eggplant_icon,
             R.drawable.marijuana_icon,
-            R.drawable.carrots_icon, R.drawable.eggplant_icon_watered,
+            R.drawable.onion_icon,
+            R.drawable.peas_icon,
+            R.drawable.potato_icon,
+            R.drawable.red_flower_icon,
+            R.drawable.yellow_flower_icon,
+            R.drawable.dirt_icon,
+            R.drawable.broccoli_icon_watered,
+            R.drawable.carrots_icon_watered,
+            R.drawable.cucumber_icon_watered,
+            R.drawable.eggplant_icon_watered,
             R.drawable.marijuana_icon_watered,
-            R.drawable.carrots_icon_watered, R.drawable.dirt_icon};
-    static private final int [] mSelectedImageIds = {R.drawable.no_marker_highlighted,
+            R.drawable.onion_icon_watered,
+            R.drawable.peas_icon_watered,
+            R.drawable.potato_icon_watered,
+            R.drawable.red_flower_icon_watered,
+            R.drawable.yellow_flower_icon_watered,
+            R.drawable.dirt_icon
+    };
+    static private final int [] mSelectedImageIds = {
+            R.drawable.broccoli_icon_highlighted,
+            R.drawable.carrots_icon_highlighted,
+            R.drawable.cucumber_icon_highlighted,
+            R.drawable.eggplant_icon_highlighted,
             R.drawable.marijuana_highlighted,
-            R.drawable.blue_marker_highlighted, R.drawable.eggplant_icon_watered,
+            R.drawable.onion_icon_highlighted,
+            R.drawable.peas_icon_highlighted,
+            R.drawable.potato_icon_highlighted,
+            R.drawable.red_flower_icon_highlighted,
+            R.drawable.yellow_flower_icon_highlighted,
+            R.drawable.dirt_icon_highlighted,
+            R.drawable.broccoli_icon_watered,
+            R.drawable.carrots_icon_watered,
+            R.drawable.cucumber_icon_watered,
+            R.drawable.eggplant_icon_watered,
             R.drawable.marijuana_icon_watered,
-            R.drawable.carrots_icon_watered, R.drawable.dirt_icon};
+            R.drawable.onion_icon_watered,
+            R.drawable.peas_icon_watered,
+            R.drawable.potato_icon_watered,
+            R.drawable.red_flower_icon_watered,
+            R.drawable.yellow_flower_icon_watered,
+            R.drawable.dirt_icon
+    };
 
     private Bitmap [] mBitmaps;              // WATCH OUT! Do not set this variable to null.
     // setupToDraw method sets this variable and that method is called
@@ -217,6 +258,7 @@ public class GameBoardView extends PanZoomView {
      */
 
     public void drawOnCanvas (Canvas canvas) {
+        //TODO create a plant in plant table for each plant
 
         float fx, fy;
 
@@ -243,6 +285,9 @@ public class GameBoardView extends PanZoomView {
                         : bitmaps [bindex];
                 dest1.offsetTo (dx, dy);
                 canvas.drawBitmap (b1, null, dest1, paint);
+                //todo think it goes here... -nope, does not go here.
+
+
 
                 if (AppConfig.DEBUG)
                     if (j == 9) {
@@ -342,11 +387,22 @@ public class GameBoardView extends PanZoomView {
 
     public boolean isSelected (int x, int y)
     {
+
+
+
+      //  Log.e("LOCATION SELECTED", String.valueOf(x));
+
         int ix = x - 1;
         int iy = y - 1;
         if ((ix < 0) || (ix >= pNumSquaresAlongCanvas)) return false;
         if ((iy < 0) || (iy >= pNumSquaresAlongCanvas)) return false;
+/*
+        else{
+            plant.getPlant_id()
+        }
+        */
         return (mGridSelect [iy] [ix] > 0);
+
     } // end gridValue
 
     /**
@@ -600,6 +656,7 @@ public class GameBoardView extends PanZoomView {
         if ((ix < 0) || (ix >= pNumSquaresAlongCanvas)) return;
         if ((iy < 0) || (iy >= pNumSquaresAlongCanvas)) return;
         mGrid [iy][ix] = value;
+
     }
 
     /**
@@ -689,12 +746,7 @@ public class GameBoardView extends PanZoomView {
     /**
      * Change the selection state of the square at the point given.
      *
-     * <p> A call should be made to the invalidate method after calling this method.
-     *
-     * @param x int - 1..numColumns
-     * @param y int - 1..numRows
-     * @param value int
-     * @return int - the new selection state, where 1 means selected.
+     * <p> A call should be made to the invalidate method after calling this methodd
      */
 
     public int toggleSelection (int x, int y)
@@ -732,6 +784,19 @@ public class GameBoardView extends PanZoomView {
         for (int y = 0; y < pNumSquaresAlongCanvas; y++) {
             for (int x = 0; x < pNumSquaresAlongCanvas; x++) {
                 mGrid [y][x] = grid [y][x];
+
+
+                //AddPlant plant = new AddPlant();
+                Intent intent = new Intent(getContext(), AddPlant.class);
+
+                intent.putExtra("x", x + 1);
+                intent.putExtra("y", y + 1);
+
+                Log.e("AAAAAAAAAAAAAA ", "AAAAAAAAA: "+x +" " + y );
+
+                mContext.startActivity(intent);
+
+
             }
         }
     }

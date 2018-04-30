@@ -1,14 +1,21 @@
 package com.example.j.crop;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentActivity;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +27,7 @@ import android.view.MenuItem;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 /**
  * This activity displays a grid of image squares that represent a game board.
@@ -38,11 +46,13 @@ import android.view.View;
 public class MainActivity extends AppCompatActivity
         implements GameBoardTouchListener
 {
-    private int selected_x = 0;
+	private int selected_x = 0;
     private int selected_y = 0;
     private int first_x = 0;
     private int first_y = 0;
     private int firstValue = 0;
+
+    int[] dimensions;
 
     FloatingActionButton fab_swap;
     FloatingActionButton fab_clear;
@@ -51,14 +61,17 @@ public class MainActivity extends AppCompatActivity
     private boolean edit_flag = false;
 
     ArrayList<Pair<Integer,Integer>> watered = new ArrayList<>();
-
-    static public final int NumSquaresOnGridSide = 10;
+	
+    static public final int NumSquaresOnGridSide = 10; //changed from 4 during merge - chris
     static public final int NumSquaresOnViewSide = 8;
-    static public final int NumRedBlueTypes = 3;     // Used with simple squares demo; types: blank, red, blue
+    static public final int NumRedBlueTypes = 22;     // Used with simple squares demo; types: blank, red, blue
 
     private DrawerLayout mDrawerLayout;
 
     static private Random mRandomObject = new Random (System.currentTimeMillis ());
+
+    private AppDatabase plantDatabase;
+    private Note note;
 
 /* Property Grid */
     /**
@@ -66,6 +79,8 @@ public class MainActivity extends AppCompatActivity
      */
 
     private int [][] pGrid;
+    private int x,y = 0;
+   // private int y;
 
     /**
      * Get the value of the Grid property.
@@ -123,9 +138,9 @@ public class MainActivity extends AppCompatActivity
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //chris work
-        int[] dimensions = getIntent().getIntArrayExtra("DIMENSIONS");
+		
+		//chris work
+        dimensions = getIntent().getIntArrayExtra("DIMENSIONS");
 
         //end chris work
 
@@ -232,16 +247,11 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
-
-
-
 
 
         //end chris code add
@@ -268,17 +278,42 @@ public class MainActivity extends AppCompatActivity
 
                         switch (menuItem.getItemId()) {
                             case R.id.notes:
-                                startActivity(new Intent(MainActivity.this, PlantNotes.class));
-                                break;
 
+                                if(x == 0 && y == 0) //if no plant was selected, don't start the next activity //TODO DEBUG: IF RANDOM SPOT IS SELECTED, STILL OPENS NOTES
+                                {
+                                    Toast.makeText(MainActivity.this, "No Plant Selected", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
+
+                                    intent.putExtra("x", x);
+                                    intent.putExtra("y", y);
+                                    intent.putExtra("watered", 0);
+
+                                    startActivity(intent);
+                                    break;
+                                }
                             case R.id.nav_edit_plot:
                                 enterEditMode();
                                 break;
 
                             case R.id.nav_water_mode:
+                                if(water_flag==false) {
+                                    menuItem.setTitle("Done Watering");
+                                }
+                                else
+                                {
+                                    menuItem.setTitle("Watering Mode");
+                                }
                                 enterWaterMode();
+
+
+
                                 break;
 
+                            case R.id.nav_about:
+                                startActivity(new Intent(MainActivity.this, AboutActivity.class));
+                                break;
                            // case R.id.
                         }
                         // Add code here to update the UI based on the item selected
@@ -293,6 +328,8 @@ public class MainActivity extends AppCompatActivity
 
     void enterWaterMode()
     {
+        //todo change side drawer watering mode button when done watering
+        //MenuItem done_watered = navigationView.findItem(R.id.nav_water_mode);
         GameBoardView gv = getGridView ();
         if (edit_flag)
         {
@@ -304,16 +341,31 @@ public class MainActivity extends AppCompatActivity
 
         if (water_flag)
         {
-            //TODO: UPDATE DATABASE HERE WITH PLANT WATERED. WATERED PLANTS ARE IN ARRAYLIST watered
-            //TODO: ALSO CANNOT WATER DIRT OR PROGRAM CRASHES
-            //TODO: MAYBE MAKE THIS A FUNCTION?
+            //clear edit mode if in edit mode
+            edit_flag = false;
+            gv.clearSelections();
+            fab_swap.setVisibility(View.GONE);
+            fab_clear.setVisibility(View.GONE);
+
+            //note = new Note(currentTime.toString(), " plant got watered");
+
+            for (Pair<Integer, Integer> p : watered ) { //Starts the "for" loop, allowing us go through the whole water array
+                Intent intent = new Intent(MainActivity.this, AddNote.class);
+
+                intent.putExtra("x", p.first);
+                intent.putExtra("y", p.second);
+                intent.putExtra("watered", 1);//Sent a value of 1 to the next activity, for a "if" statement
+
+                startActivity(intent);
+            }
+
             water_flag = false;
 
             //need to reset icons in watered arraylist
             for (Pair<Integer, Integer> p : watered )
             {
                 int wateredValue = gv.gridValue (p.first, p.second);
-                int originalValue = wateredValue - 3;
+                int originalValue = wateredValue - 11;
                 gv.setGridValue (p.first, p.second, originalValue);
                 gv.invalidate ();
             }
@@ -324,6 +376,8 @@ public class MainActivity extends AppCompatActivity
             watered.clear();
 
             //clear edit mode if in edit mode
+
+
             edit_flag = false;
             gv.clearSelections();
             fab_swap.setVisibility(View.GONE);
@@ -331,19 +385,27 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
     void enterEditMode()
     {
         if (water_flag) {
-            //TODO: UPDATE DATABASE HERE WITH PLANT WATERED. WATERED PLANTS ARE IN ARRAYLIST watered
-            //TODO: ALSO CANNOT WATER DIRT OR PROGRAM CRASHES
-            //TODO: MAYBE MAKE THIS A FUNCTION?
+
+            for (Pair<Integer, Integer> p : watered ) { //Starts the "for" loop, allowing us go through the whole water array
+                Intent intent = new Intent(MainActivity.this, AddNote.class);
+
+                intent.putExtra("x", p.first);
+                intent.putExtra("y", p.second);
+                intent.putExtra("watered", 1); //Sent a value of 1 to the next activity, for a "if" statement
+
+                startActivity(intent);
+            }
             water_flag = false;
 
             //need to reset icons in watered arraylist
             GameBoardView gv = getGridView();
             for (Pair<Integer, Integer> p : watered) {
                 int wateredValue = gv.gridValue(p.first, p.second);
-                int originalValue = wateredValue - 3;
+                int originalValue = wateredValue - 11;
                 gv.setGridValue(p.first, p.second, originalValue);
                 gv.invalidate();
             }
@@ -351,7 +413,7 @@ public class MainActivity extends AppCompatActivity
 
         GameBoardView gv = getGridView ();
         if (gv == null) return;
-
+        gv.clearSelections();
         if (!edit_flag) {
             edit_flag = true;
             fab_swap.setVisibility(View.VISIBLE);
@@ -368,12 +430,10 @@ public class MainActivity extends AppCompatActivity
         else
         {
             edit_flag = false;
-            gv.clearSelections();
             fab_swap.setVisibility(View.GONE);
             fab_clear.setVisibility(View.GONE);
         }
     }
-
 
 
     //side drawer buttons
@@ -392,8 +452,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-
-
     /**
      *
      *
@@ -404,13 +462,13 @@ public class MainActivity extends AppCompatActivity
      *
      */
 
-
     int [] [] randomGridArray (int n) {
         // Set up with red, blue, and gray squares
         int [][] grid = new int [n] [n];
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++) {
-                int index = randomInt (0, NumRedBlueTypes-1);    // index indicates which image to use
+                int index = dimensions[1];
+                //int index = randomInt (0, (NumRedBlueTypes / 2) - 2);    // index indicates which image to use
                 grid [i][j] = index;
             }
         return grid;
@@ -435,7 +493,6 @@ public class MainActivity extends AppCompatActivity
      * Use getGrid to access that object.
      *
      * @param n int - grid size is N x N squares
-     * @param maxValue
      * @return void
      */
 
@@ -488,18 +545,19 @@ public class MainActivity extends AppCompatActivity
     public void onTouchUp (int downX, int downY, int upX, int upY) {
         GameBoardView gv = getGridView ();
         if (gv == null) return;
-
-        if(water_flag)
+		
+		if(water_flag)
         {
-            if (gv.gridValue(upX, upY) > 2)
+            if (gv.gridValue(upX, upY) == 10)
             {
                 return;
             }
             watered.add(new Pair<>(upX, upY));
             int oldValue = gv.gridValue (upX, upY);
-            int newValue = oldValue + 3;
+            int newValue = oldValue + 11;
             gv.setGridValue (upX, upY, newValue);
             gv.invalidate ();
+            return;
         }
         if (!edit_flag)
         {
@@ -509,13 +567,20 @@ public class MainActivity extends AppCompatActivity
         boolean isSelected = gv.isSelected (upX, upY);
         gv.clearSelections ();
         if (!isSelected) gv.toggleSelection (upX, upY);
-        selected_x = upX;
+		selected_x = upX;
         selected_y = upY;
         gv.invalidate();
 
-        if (AppConfig.DEBUG)
-            Log.d (Constants.LOG_NAME, "onTouchUp x: " + upX + " y: " + upY + " selected: " + isSelected);
+        setXY(upX, upY);
 
+       // if (AppConfig.DEBUG)
+           // Log.e (Constants.LOG_NAME, "onTouchUp x: " + upX + " y: " + upY + " selected: " + isSelected);
+
+    }
+
+    private void setXY(int upX, int upY) {
+        this.x = upX;
+        this.y = upY;
     }
 
     /**
@@ -534,7 +599,17 @@ public class MainActivity extends AppCompatActivity
      */
 
     public void onLongTouchUp (int downX, int downY, int upX, int upY) {
+        GameBoardView gv = getGridView ();
+        if (gv == null) return;
 
+        int oldValue = gv.gridValue (upX, upY);
+        int newValue = oldValue + 1;
+        if (newValue >= NumRedBlueTypes) newValue = 0;
+        gv.setGridValue (upX, upY, newValue);
+        gv.invalidate ();
+
+        if (AppConfig.DEBUG)
+            Log.d (Constants.LOG_NAME, "onLongTouchUp x: " + upX + " y: " + upY + " old value: " + oldValue);
 
     }
 

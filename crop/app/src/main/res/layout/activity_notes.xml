@@ -1,21 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true">
+    >
 
-    <TextView
-        android:id="@+id/tv"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:id="@+id/ll"
+        android:layout_height="513dp"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/abl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+
+        </android.support.design.widget.AppBarLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/exit"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="16dp"
+        android:layout_weight="1.0"
+        android:background="@drawable/exit"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="right|bottom" />
+
 
     <HorizontalScrollView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/horizontalScrollView"
-        android:layout_alignParentTop="true">
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="350dp"
+        android:layout_alignParentTop="true"
+        tools:layout_editor_absoluteY="4dp">
 
         <ImageView
             android:id="@+id/sample"
@@ -25,16 +50,6 @@
             android:src="@drawable/sample" />
 
     </HorizontalScrollView>
-
-    <Button
-        android:id="@+id/uploadPhoto"
-        android:background="@drawable/camera_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignBottom="@id/horizontalScrollView"
-        android:layout_weight="1.0"
-        />
 
 
     <ScrollView
@@ -53,11 +68,13 @@
 
     <Button
         android:id="@+id/upload"
-        android:text="Start Notes Activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"/>
+        android:text="Start Camera"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="center|bottom" />
 
+    <include layout="@layout/content_main"
+        android:id="@+id/include" />
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

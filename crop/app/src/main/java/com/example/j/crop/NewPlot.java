@@ -1,6 +1,7 @@
 package com.example.j.crop;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import java.io.Serializable;
 
@@ -20,6 +23,42 @@ public class NewPlot extends AppCompatActivity {
 
     int[] dimensions = {0, 0};
     private DrawerLayout mDrawerLayout;
+
+    static private final int [] imageIds = {
+            R.drawable.broccoli_icon,
+            R.drawable.carrots_icon,
+            R.drawable.cucumber_icon,
+            R.drawable.eggplant_icon,
+            R.drawable.marijuana_icon,
+            R.drawable.onion_icon,
+            R.drawable.peas_icon,
+            R.drawable.potato_icon,
+            R.drawable.red_flower_icon,
+            R.drawable.yellow_flower_icon,
+            R.drawable.dirt_icon
+    };
+    static private final int [] SelectedImageIds = {
+            R.drawable.broccoli_icon_highlighted,
+            R.drawable.carrots_icon_highlighted,
+            R.drawable.cucumber_icon_highlighted,
+            R.drawable.eggplant_icon_highlighted,
+            R.drawable.marijuana_highlighted,
+            R.drawable.onion_icon_highlighted,
+            R.drawable.peas_icon_highlighted,
+            R.drawable.potato_icon_highlighted,
+            R.drawable.red_flower_icon_highlighted,
+            R.drawable.yellow_flower_icon_highlighted,
+            R.drawable.dirt_icon_highlighted
+    };
+    int selected = 0;
+
+    void clearSelections()
+    {
+        for (int i = 0; i < 11; i++) {
+            ImageView temp = findViewById(i);
+            temp.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageIds[i]));
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +73,38 @@ public class NewPlot extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dimensions[0] = Integer.parseInt(input_one.getText().toString());
-                dimensions[1] = Integer.parseInt(input_one.getText().toString());
+                dimensions[1] = selected;
                 to_second_activity();
             }
         });
+
+
+
+        LinearLayout layout = (LinearLayout) findViewById(R.id.linear);
+        for (int i = 0; i < 11; i++) {
+            final ImageView imageView;
+            imageView = new ImageView(this);
+            imageView.setId(i);
+            imageView.setPadding(2, 2, 2, 2);
+            imageView.setImageBitmap(BitmapFactory.decodeResource(
+                    getResources(), imageIds[i]));
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selected = imageView.getId();
+                    clearSelections();
+                    imageView.setImageBitmap(BitmapFactory.decodeResource(
+                            getResources(), SelectedImageIds[selected]));
+                }
+            });
+            layout.addView(imageView);
+        }
+
+
+
+
+
 
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -65,7 +132,7 @@ public class NewPlot extends AppCompatActivity {
 
                         switch (menuItem.getItemId()) {
                             case R.id.notes:
-                                startActivity(new Intent(NewPlot.this, PlantNotes.class));
+                                startActivity(new Intent(NewPlot.this, Note.class));
                                 break;
 
                             // case R.id.

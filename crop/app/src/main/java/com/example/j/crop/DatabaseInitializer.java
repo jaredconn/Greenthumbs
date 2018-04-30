@@ -29,8 +29,8 @@ public class DatabaseInitializer {
 
     private static void populateWithTestData(AppDatabase db) {
         Plant plant = new Plant();
-        plant.setPlantID(11);
-        plant.setPlantName("Weed");
+        plant.setPlant_id(11);
+        plant.setPlant_name("Weed");
         addPlant(db, plant);
 
         List<Plant> userList = db.databaseFunc().getAll();

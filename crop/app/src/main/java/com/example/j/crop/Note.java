@@ -9,6 +9,8 @@ import android.arch.persistence.room.PrimaryKey;
 import java.io.Serializable;
 import java.util.Date;
 
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
 /**
  * Created by Pavneet_Singh on 12/30/17.
  * adapted by Jared Conn 4/7/2018
@@ -20,14 +22,18 @@ public class Note implements Serializable{
     @PrimaryKey(autoGenerate = true)
     private long note_id;
 
-    //TODO link plant and note by foreign keys
-
     @ColumnInfo(name = "note_content") // column name will be "note_content" instead of "content" in table
+
     private String content;
 
     private String title;
 
     private Date date;
+
+    private long plant_id;
+
+    private long lock_id;
+
 
 //    public Note(int note_id, String content, String title, Date date) {
 //        this.note_id = note_id;
@@ -77,6 +83,15 @@ public class Note implements Serializable{
         this.title = title;
     }
 
+    public void setLock_id (long lock_id) {
+        this.lock_id = lock_id;
+    }
+    public long getLock_id () {
+        return lock_id;
+    }
+
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -104,6 +119,17 @@ public class Note implements Serializable{
                 ", content='" + content + '\'' +
                 ", title='" + title + '\'' +
                 ", date=" + date +
+                ", plant_id=" + plant_id +
+                        ", lock_id=" + lock_id +
                 '}';
+    }
+
+
+    public long getPlant_id() {
+        return plant_id;
+    }
+
+    public void setPlant_id(long plant_id) {
+        this.plant_id = plant_id;
     }
 }
