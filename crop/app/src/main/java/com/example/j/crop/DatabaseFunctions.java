@@ -43,6 +43,13 @@ public interface DatabaseFunctions {
             "WHERE notes.plant_id=:plant_id")
     List<Note> getNotesForPlant(final long plant_id);
 
+    /* //todo fix this thing
+    @Query("SELECT path FROM photo " +
+            "JOIN plant ON" +
+            "(photo.plant_id=plant.plant_id)" +
+            "WHERE photo.plant_id=:plant_id")
+    List<Photo> getPhotoPathsForPlant(final long plant_id);
+*/
     @Query("SELECT plant_id from plant WHERE x=:x AND y=:y")
     long getPlantId(int x, int y);
 }

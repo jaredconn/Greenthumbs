@@ -79,10 +79,6 @@ public class AddNoteActivity extends AppCompatActivity implements NotesAdapter.O
 
                 long plant_id = activityReference.get().noteDatabase.databaseFunc().getPlantId(x, y);
 
-               // Log.e("AddNoteActivity ", "plant_id888888888: "+plant_id );
-
-                //activityReference.get().noteDatabase.databaseFunc().updateNoteIds(lock_id);
-
                 return activityReference.get().noteDatabase.databaseFunc().getNotesForPlant(plant_id);
             }
             else

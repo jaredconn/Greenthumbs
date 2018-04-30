@@ -36,6 +36,7 @@
             android:theme="@style/Theme.AppCompat.Light" />
         <activity android:name=".AddPlant" />
         <activity android:name=".FetchPhoto"/>
+        <activity android:name=".AddPhoto"/>
 
     </application>
 

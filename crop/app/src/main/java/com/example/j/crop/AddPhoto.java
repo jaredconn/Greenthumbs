@@ -23,6 +23,8 @@ public class AddPhoto extends AppCompatActivity {
 
     private AppDatabase plantDatabase;
     private Photo photo;
+    private static int x,y;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,11 +34,18 @@ public class AddPhoto extends AppCompatActivity {
 
         photo = new Photo();
 
-        //int x,y;
+       // int x,y;
+        String path;
+        Bundle intent = getIntent().getExtras();
+        path = intent.getString("path");
+        x = intent.getInt("x");
+        y = intent.getInt("y");
 
-       // Bundle intent = getIntent().getExtras();
-       // x = intent.getInt("x");
-      //  y = intent.getInt("y");
+        Log.e("Photo Path ", "AddPhoto: "+ path );
+
+        photo.setPath(path);
+        photo.setPlant_x(x);
+        photo.setPlant_y(y);
 
        // plant.setX(x);
         //plant.setY(y);
@@ -47,6 +56,10 @@ public class AddPhoto extends AppCompatActivity {
     private void setResult(Photo photo, int flag){
         setResult(flag,new Intent().putExtra("photo", photo));
         finish();
+        Intent intent = new Intent(AddPhoto.this, FetchPhoto.class);
+        intent.putExtra("x", x);
+        intent.putExtra("y", y);
+        startActivity(intent); //then go back to view mode
     }
 
     private static class InsertTask extends AsyncTask<Void, Void, Boolean> {
@@ -65,6 +78,7 @@ public class AddPhoto extends AppCompatActivity {
         protected Boolean doInBackground(Void... objs) {
             long j = activityReference.get().plantDatabase.databaseFunc().insertPhoto(photo);
             photo.setPhoto_id(j);
+          //  photo.setPath(path);
             Log.e("Photo ID ", "doInBackground: "+j );
             return true;
         }

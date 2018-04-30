@@ -2,12 +2,16 @@ package com.example.j.crop;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -26,8 +30,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -42,9 +54,13 @@ import pub.devrel.easypermissions.EasyPermissions;
         private RecyclerView myRecyclerView;
         private PhotoRecycler myRecyclerViewAdapter;
         private LinearLayoutManager linearLayoutManager;
+        private AppDatabase photoDatabase;
         ImageView IMG;
-
-        TextView textInfo;
+        Bitmap bitmap;
+        String root;
+        String fname;
+        static int x;
+    static int y;
 
         /*image orientation*/
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
@@ -62,6 +78,11 @@ import pub.devrel.easypermissions.EasyPermissions;
             super.onCreate(savedInstanceState);
             setContentView(R.layout.photo_recycler);
 
+
+
+            Bundle extras = getIntent().getExtras();
+            x = extras.getInt("x");
+            y = extras.getInt("y");
 
            // textInfo = (TextView)findViewById(R.id.info);
            // textInfo.setMovementMethod(new ScrollingMovementMethod());
@@ -95,6 +116,16 @@ import pub.devrel.easypermissions.EasyPermissions;
         Button startCamera = (Button) findViewById(R.id.upload);
         Button exit = (Button) findViewById(R.id.exit);
 
+        IMG.setOnClickListener(new View.OnClickListener() { //make the image disappear on click
+            @Override
+            public void onClick(View v) {
+               IMG.setVisibility(View.GONE);
+            }
+        });
+
+
+
+
 
         exit.setOnClickListener(new View.OnClickListener() { //go back to plots
             public void onClick(View v)
@@ -108,42 +139,48 @@ import pub.devrel.easypermissions.EasyPermissions;
             @Override
             public void onClick(View v)
             {
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                File imageDirectory = new File( Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/Camera/" ); //gallery directory
-                String fileName = getFileName();
-                File imageFile = new File(imageDirectory, fileName);
-                Uri imageUri = Uri.fromFile(imageFile);
-                galleryAddPic(imageFile.getAbsolutePath().toString());
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                startActivityForResult(takePictureIntent, 1313);
+                //Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+                File myDir = new File(root + "/Greenthumb");
+                myDir.mkdirs();
+                Random generator = new Random();
+                int n = 1000000;
+                n = generator.nextInt(n);
+                fname = "PlantPic" + n + ".png";
+                File file = new File(myDir, fname);
+                Uri outputFileUri = Uri.fromFile(file);
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+
+                startActivityForResult(cameraIntent, 1313);
             }
         });
 
-            prepareGallery();
+        prepareGallery();
         }
 
-        private void prepareGallery(){
-
-            String ExternalStorageDirectoryPath = Environment
-                    .getExternalStorageDirectory()
-                    .getAbsolutePath();
-
-            String targetPath = ExternalStorageDirectoryPath + "/DCIM/Camera";
+        private void prepareGallery() {
 
 
-            Toast.makeText(getApplicationContext(), targetPath, Toast.LENGTH_LONG).show();
-            File targetDirectory = new File(targetPath);
+            String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/Greenthumb";
+           // photoDatabase = AppDatabase.getInstance(FetchPhoto.this);
+          //  new RetrieveTask(this).execute();
+            //todo get a list of photo paths from database
+            //todo display that list
 
+            File targetDirectory = new File(root);
 
-            File[] files = targetDirectory.listFiles();
-            for (File file : files){
-                Uri uri = Uri.fromFile(file);
-                myRecyclerViewAdapter.add(
-                        myRecyclerViewAdapter.getItemCount(),
-                        uri);
-                //todo add photo to database
+            try {
+                File[] files = targetDirectory.listFiles();
+                for (File file : files) {
+                    Uri uri = Uri.fromFile(file);
+                    myRecyclerViewAdapter.add(myRecyclerViewAdapter.getItemCount(), uri);
+                }
             }
-        }
+                 catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
         @Override
         public void onItemClick(PhotoRecycler.ItemHolder item, int position) {
@@ -164,61 +201,80 @@ import pub.devrel.easypermissions.EasyPermissions;
             final Bitmap myBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath()); //retrieving file
             Bitmap workingBitmap = Bitmap.createBitmap(myBitmap);
             final Bitmap trueCopy = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
-            IMG.setImageBitmap(trueCopy);
 
+            IMG.setImageBitmap(trueCopy);
+            IMG.setVisibility(View.VISIBLE);
+
+            //todo make options to delete a photo, and a X button to make IMG invisible
 
             Toast.makeText(FetchPhoto.this, stringitemUri, Toast.LENGTH_SHORT).show();
         }
 
-
-/* camera functions */
-
-    protected void galleryAddPic(String mCurrentPhotoPath) {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-
-        //todo ON RETREIVAL OF THE IMAGES, MAKE SURE TO FIX THE Y AXIS
-        Matrix matrix = new Matrix();
-        matrix.preScale(1, -1);
-
-
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
-    }
-
-
-
-    private String getFileName() {
-        return "image" + 0 + ".jpg";
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) //operation was successful
         {
+
             if (requestCode == 1313) //then we're taking a new photo
             {
+
+
+                /*
+                //this code creates a lower quality but faster performing bitmap
+                bitmap = (Bitmap) data.getExtras().get("data");
+                String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+                File myDir = new File(root + "/Greenthumb");
+                myDir.mkdirs();
+                Random generator = new Random();
+                int n = 1000000;
+                n = generator.nextInt(n);
+                fname = "PlantPic" + n + ".png";
+                File file = new File(myDir, fname);
+
+
+
+                if (file.exists())
+                    file.delete();
+                try {
+                    //todo fix the quality of the photo
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG , 100, bytes);
+                    FileOutputStream out = new FileOutputStream(file);
+                    out.write(bytes.toByteArray());
+                    //bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                    out.flush();
+                    out.close();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                // Tell the media scanner about the new file so that it is
+                // immediately available to the user.
+                MediaScannerConnection.scanFile(this, new String[] { file.toString() }, null,
+                        new MediaScannerConnection.OnScanCompletedListener() {
+                            public void onScanCompleted(String path, Uri uri) {
+                                Log.i("ExternalStorage", "Scanned " + path + ":");
+                                Log.i("ExternalStorage", "-> uri=" + uri);
+                            }
+                        });
+                        */
+                //todo delete the duplicate photo that is saved in the gallery.
+                /*delete the duplicate photo*/
+                /*add the photo to the database*/
+                /*restart the activity with the new photo in the list*/
+
                 finish();
-                Intent intent = new Intent(FetchPhoto.this, FetchPhoto.class);
-                startActivity(intent); //restart the activity with the new photo in the list
+                //Intent addPhotoIntent = new Intent(FetchPhoto.this, AddPhoto.class);
+               // startActivity(addPhotoIntent);
+
+                Intent intent = new Intent(FetchPhoto.this, AddPhoto.class);
+                intent.putExtra("path", root + "/Greenthumb/" + fname);
+                intent.putExtra("x", x);
+                intent.putExtra("y", y);
+
+                startActivity(intent);
+
             }
         }
-    }
-
-
-
-
-    //display the current time
-        /*
-       final TextView tv = (TextView) findViewById(R.id.tv);
-        final Handler someHandler = new Handler(getMainLooper());
-        someHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                tv.setText(new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss", Locale.US).format(new Date()));
-                someHandler.postDelayed(this, 1000);
-            }
-        }, 10);
-        */
-}
-
+     }
+  }

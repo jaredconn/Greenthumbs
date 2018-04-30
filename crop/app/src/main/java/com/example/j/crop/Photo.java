@@ -13,10 +13,12 @@ import java.io.Serializable;
 @Entity(tableName ="photo")
 public class Photo implements Serializable {
 
-    @ColumnInfo(name = "Photo")
-    private String path;
+    @ColumnInfo(name = "Photo_content")
 
+    private String path;
     private long plant_id;
+    private int plant_x;
+    private int plant_y;
 
     @PrimaryKey(autoGenerate = true)
     private long photo_id;
@@ -43,5 +45,21 @@ public class Photo implements Serializable {
 
     public void setPlant_id(long plant_id) {
         this.plant_id = plant_id;
+    }
+
+    public int getPlant_x() {
+        return plant_x;
+    }
+
+    public void setPlant_x(int plant_x) {
+        this.plant_x = plant_x;
+    }
+
+    public int getPlant_y() {
+        return plant_y;
+    }
+
+    public void setPlant_y(int plant_y) {
+        this.plant_y = plant_y;
     }
 }
