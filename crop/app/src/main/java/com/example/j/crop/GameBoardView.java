@@ -25,7 +25,7 @@ public class GameBoardView extends PanZoomView {
     static public final int DefaultNumSquaresAlongSide = 9;
     static public final int DefaultNumSquaresAlongCanvas = 19;
     static public final float CanvasSizeMultiplier = (float) DefaultNumSquaresAlongCanvas / (float) DefaultNumSquaresAlongSide;
-    static public final int NumRedBlueTypes = 3;     // Used with simple squares demo; types: blank, red, blue
+    static public final int NumRedBlueTypes = 7;     // Used with simple squares demo; types: blank, red, blue
 
 
     // Variables that control placement and translation of the canvas.
@@ -44,17 +44,21 @@ public class GameBoardView extends PanZoomView {
 
     static private final int [] mUnselectedImageIds = {R.drawable.eggplant_icon,
             R.drawable.marijuana_icon,
-            R.drawable.carrots_icon};
+            R.drawable.carrots_icon, R.drawable.eggplant_icon_watered,
+            R.drawable.marijuana_icon_watered,
+            R.drawable.carrots_icon_watered, R.drawable.dirt_icon};
     static private final int [] mSelectedImageIds = {R.drawable.no_marker_highlighted,
             R.drawable.marijuana_highlighted,
-            R.drawable.blue_marker_highlighted};
+            R.drawable.blue_marker_highlighted, R.drawable.eggplant_icon_watered,
+            R.drawable.marijuana_icon_watered,
+            R.drawable.carrots_icon_watered, R.drawable.dirt_icon};
 
     private Bitmap [] mBitmaps;              // WATCH OUT! Do not set this variable to null.
     // setupToDraw method sets this variable and that method is called
     // from a constructor.
 
     private int [] [] mGrid;                 // 0 .. NumRedBlueTypes-1
-    private int [] [] mGridSelect;           // 0 = normal; 1 = selected
+    private int [] [] mGridSelect; // 0 = normal; 1 = selected
 
     private Bitmap [] mSelectedBitmaps;
 
@@ -225,6 +229,7 @@ public class GameBoardView extends PanZoomView {
         // Get up the bitmaps to be displayed. Get the grid.
         Bitmap [] bitmaps = getBitmapsArray ();        // also could do "bitmaps = mBitmaps".
         Bitmap [] selectedBitmaps = mSelectedBitmaps;
+
         int [] [] grid = getGridArray ();
 
         //
@@ -703,12 +708,7 @@ public class GameBoardView extends PanZoomView {
     /**
      * Change the selection state of the square at the point given.
      *
-     * <p> A call should be made to the invalidate method after calling this method.
-     *
-     * @param x int - 1..numColumns
-     * @param y int - 1..numRows
-     * @param value int
-     * @return int - the new selection state, where 1 means selected.
+     * <p> A call should be made to the invalidate method after calling this methodd
      */
 
     public int toggleSelection (int x, int y)

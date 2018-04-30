@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -24,6 +26,7 @@ public class AddNote extends AppCompatActivity {
 
     static int x;
     static int y;
+    static int watered;
 
 
     /*database*/
@@ -32,6 +35,7 @@ public class AddNote extends AppCompatActivity {
     private boolean update;
     private boolean delete;
     private boolean firstNoteCreated = false;
+
     private static long j = 1;
 
 
@@ -47,6 +51,7 @@ public class AddNote extends AppCompatActivity {
         Bundle intent = getIntent().getExtras();
         x = intent.getInt("x");
         y = intent.getInt("y");
+        watered = intent.getInt("watered"); //grabbing the "if watered" value here
 
     et_title = findViewById(R.id.et_title);
     et_content = findViewById(R.id.et_content);
@@ -66,7 +71,9 @@ public class AddNote extends AppCompatActivity {
             finish();
 
         }
-        if ( (note = (Note) getIntent().getSerializableExtra("note"))!=null ) {
+        
+        if ( (note = (Note) getIntent().getSerializableExtra("note"))!=null && watered == 0 ) { // added the "&&" so that the program doesn't
+                                                                                                        //think the watered is for a update
             getSupportActionBar().setTitle("Update Note");
             update = true;
             button.setText("Update");
@@ -86,11 +93,25 @@ public class AddNote extends AppCompatActivity {
                 plantDatabase.databaseFunc().updateNote(note);
                 setResult(note,2);
 
-            } else {
+            }
+            else {
                 note = new Note(et_content.getText().toString(), et_title.getText().toString());
                 firstNoteCreated = true;
                 new InsertTask(AddNote.this, note).execute();
 
+            }
+            if(watered == 1){
+                Date currentTime = Calendar.getInstance().getTime();
+                note = new Note(currentTime.toString(), "plant been watered");
+                new InsertTask(AddNote.this, note).execute();
+                firstNoteCreated = true;
+                Thread thread = new Thread(new Runnable() {
+                    public void run() { //do this every time so that the plant_id is saved
+                        // code goes here.
+                        db.databaseFunc().updateNote(note);
+                    }
+                });
+                thread.start();
             }
             }
         });
