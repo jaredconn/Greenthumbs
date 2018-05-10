@@ -44,9 +44,11 @@
             android:name=".Plants.AddPlant"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
+
             android:name=".Notes.AddNote"
             android:theme="@style/Theme.AppCompat.Light" />
         <activity android:name=".Photos.FetchPhoto"/>
+
 
         <activity android:name=".AboutActivity"></activity>
     </application>
