@@ -102,13 +102,16 @@ public class AddNote extends AppCompatActivity {
                                               plantDatabase.databaseFunc().updateNote(note);
                                               setResult(note, 2);
 
-                                          } else {
-                                              note = new Note(et_content.getText().toString(), et_title.getText().toString());
-                                              new InsertTask(AddNote.this, note).execute();
-                                          }
-                                      }
-                                  }
-        );
+            }
+            if(watered == 1){
+                Date currentTime = Calendar.getInstance().getTime();
+                note = new Note(currentTime.toString(), "plant been watered");
+                new InsertTask(AddNote.this, note).execute();
+                firstNoteCreated = true;
+                plantDatabase.databaseFunc().updateNote(note);
+            }
+            }
+        });
     }
 
 
