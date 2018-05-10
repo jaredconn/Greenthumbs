@@ -51,15 +51,15 @@ public class AddNote extends AppCompatActivity {
         y = intent.getInt("y");
         watered = intent.getInt("watered"); //grabbing the "if watered" value here
 
-    et_title = findViewById(R.id.et_title);
-    et_content = findViewById(R.id.et_content);
+        et_title = findViewById(R.id.et_title);
+        et_content = findViewById(R.id.et_content);
 
-    plantDatabase = AppDatabase.getInstance(AddNote.this);
+        plantDatabase = AppDatabase.getInstance(AddNote.this);
 
-    Button button = findViewById(R.id.but_save);
+        Button button = findViewById(R.id.but_save);
 
 
-            if(watered == 1){
+        if(watered == 1){
             Date currentTime = Calendar.getInstance().getTime();
             note = new Note(currentTime.toString(), "plant been watered");
             new InsertTask(AddNote.this, note).execute();
@@ -79,9 +79,9 @@ public class AddNote extends AppCompatActivity {
             finish();
 
         }
-        
+
         if ( (note = (Note) getIntent().getSerializableExtra("note"))!=null && watered == 0 ) { // added the "&&" so that the program doesn't
-                                                                                                        //think the watered is for a update
+            //think the watered is for a update
             getSupportActionBar().setTitle("Update Note");
             update = true;
             button.setText("Update");
@@ -102,16 +102,13 @@ public class AddNote extends AppCompatActivity {
                                               plantDatabase.databaseFunc().updateNote(note);
                                               setResult(note, 2);
 
-            }
-            if(watered == 1){
-                Date currentTime = Calendar.getInstance().getTime();
-                note = new Note(currentTime.toString(), "plant been watered");
-                new InsertTask(AddNote.this, note).execute();
-                firstNoteCreated = true;
-                plantDatabase.databaseFunc().updateNote(note);
-            }
-            }
-        });
+                                          } else {
+                                              note = new Note(et_content.getText().toString(), et_title.getText().toString());
+                                              new InsertTask(AddNote.this, note).execute();
+                                          }
+                                      }
+                                  }
+        );
     }
 
 
@@ -120,41 +117,41 @@ public class AddNote extends AppCompatActivity {
         finish();
     }
 
-static class InsertTask extends AsyncTask<Void, Void, Boolean> {
+    static class InsertTask extends AsyncTask<Void, Void, Boolean> {
 
-    private WeakReference<AddNote> activityReference;
-    private Note note;
+        private WeakReference<AddNote> activityReference;
+        private Note note;
 
-    // only retain a weak reference to the activity
-    InsertTask(AddNote context, Note note) {
-        activityReference = new WeakReference<>(context);
-        this.note = note;
-    }
-
-    // doInBackground methods runs on a worker thread
-    @Override
-    protected Boolean doInBackground(Void... objs) {
-
-        long j = activityReference.get().plantDatabase.databaseFunc().insertNote(note);
-        Log.e("AddNote   ", "testing Note ID: "+ j);
-        note.setNote_id(j);
-        note.setLock_id(j);
-
-        long p_id = activityReference.get().plantDatabase.databaseFunc().getPlantId(x,y);
-        note.setPlant_id(p_id);
-        activityReference.get().plantDatabase.databaseFunc().updateNote(note);
-
-        Log.e("ID ", "doInBackground: "+j );
-        return true;
-    }
-
-    // onPostExecute runs on main thread
-    @Override
-    protected void onPostExecute(Boolean bool) {
-        if (bool) {
-            activityReference.get().setResult(note, 1);
-            activityReference.get().finish();
+        // only retain a weak reference to the activity
+        InsertTask(AddNote context, Note note) {
+            activityReference = new WeakReference<>(context);
+            this.note = note;
         }
-    }
+
+        // doInBackground methods runs on a worker thread
+        @Override
+        protected Boolean doInBackground(Void... objs) {
+
+            long j = activityReference.get().plantDatabase.databaseFunc().insertNote(note);
+            Log.e("AddNote   ", "testing Note ID: "+ j);
+            note.setNote_id(j);
+            note.setLock_id(j);
+
+            long p_id = activityReference.get().plantDatabase.databaseFunc().getPlantId(x,y);
+            note.setPlant_id(p_id);
+            activityReference.get().plantDatabase.databaseFunc().updateNote(note);
+
+            Log.e("ID ", "doInBackground: "+j );
+            return true;
+        }
+
+        // onPostExecute runs on main thread
+        @Override
+        protected void onPostExecute(Boolean bool) {
+            if (bool) {
+                activityReference.get().setResult(note, 1);
+                activityReference.get().finish();
+            }
+        }
     }
 }
