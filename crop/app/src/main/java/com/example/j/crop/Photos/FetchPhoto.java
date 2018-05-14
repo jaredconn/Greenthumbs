@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -24,9 +25,12 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.j.crop.R;
+import com.example.j.crop.Room.AppDatabase;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Random;
 
 import pub.devrel.easypermissions.EasyPermissions;
@@ -40,11 +44,16 @@ import pub.devrel.easypermissions.EasyPermissions;
     public class FetchPhoto extends AppCompatActivity implements PhotoRecycler.OnItemClickListener{
 
         private RecyclerView myRecyclerView;
-        private PhotoRecycler myRecyclerViewAdapter;
+        private static PhotoRecycler myRecyclerViewAdapter;
         private LinearLayoutManager linearLayoutManager;
         ImageView IMG;
         String root;
         String fname;
+        private static String path;
+        AppDatabase db;
+
+    private static int x;
+    private static int y;
 
 
         /*image orientation*/
@@ -57,15 +66,15 @@ import pub.devrel.easypermissions.EasyPermissions;
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
 
-
     @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.photo_recycler);
 
 
-           // textInfo = (TextView)findViewById(R.id.info);
-           // textInfo.setMovementMethod(new ScrollingMovementMethod());
+        Bundle intent = getIntent().getExtras();
+        x = intent.getInt("x");
+        y = intent.getInt("y");
 
             myRecyclerView = (RecyclerView)findViewById(R.id.myrecyclerview);
             linearLayoutManager =
@@ -85,7 +94,6 @@ import pub.devrel.easypermissions.EasyPermissions;
                     e.printStackTrace();
                 }
             }
-
             //check for permission
             if(ContextCompat.checkSelfPermission(this,
                     Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
@@ -128,7 +136,7 @@ import pub.devrel.easypermissions.EasyPermissions;
                 Uri outputFileUri = Uri.fromFile(file);
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-
+                path = root + "/Greenthumb" + "/" + fname;
                 startActivityForResult(cameraIntent, 1313);
             }
         });
@@ -136,25 +144,60 @@ import pub.devrel.easypermissions.EasyPermissions;
             prepareGallery();
         }
 
-        private void prepareGallery() {
+
+    private void prepareGallery(){
+        db = AppDatabase.getInstance(FetchPhoto.this);
+        new RetrieveTask(this).execute();
+    }
+
+    private static class RetrieveTask extends AsyncTask<Void,Void,List<Photo>> {
+
+        private WeakReference<FetchPhoto> activityReference;
+
+        // only retain a weak reference to the activity
+        RetrieveTask(FetchPhoto context) {
+            activityReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected List<Photo> doInBackground(Void... voids) {
+            if (activityReference.get()!=null) {
+                long plant_id = activityReference.get().db.databaseFunc().getPlantId(x, y);
+                return activityReference.get().db.databaseFunc().getPhotosForPlant(plant_id);
+            }
+            else
+                return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<Photo> photos) {
 
             String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/Greenthumb";
 
-            //Toast.makeText(getApplicationContext(), targetPath, Toast.LENGTH_LONG).show();
             File targetDirectory = new File(root);
+
 
             try {
                 File[] files = targetDirectory.listFiles();
-                for (File file : files) {
-                    Uri uri = Uri.fromFile(file);
-                    myRecyclerViewAdapter.add(myRecyclerViewAdapter.getItemCount(), uri);
-                    //todo add photo to database
+                for (int i = 0; i < photos.size(); i++){
+                    for (File file : files) {
+
+                        String pathy = photos.get(i).getPath();
+                        String plantPicPlusUniqueNumber = pathy.substring(40);
+                        String actualString = root + "/" + plantPicPlusUniqueNumber; //missing that slash
+
+                        if (file.toString().equals(actualString)) {
+                            Uri uri = Uri.fromFile(file);
+                            myRecyclerViewAdapter.add(myRecyclerViewAdapter.getItemCount(), uri);
+                        }
+                    }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+                } catch(Exception e){
+                    e.printStackTrace();
+                }
+                activityReference.get().myRecyclerViewAdapter.notifyDataSetChanged();
             }
         }
-
 
         @Override
         public void onItemClick(PhotoRecycler.ItemHolder item, int position) {
@@ -185,9 +228,13 @@ import pub.devrel.easypermissions.EasyPermissions;
         {
             if (requestCode == 1313) //then we're taking a new photo
             {
+                //photo is added to database here
+                Intent addPhotoIntent = new Intent(FetchPhoto.this, AddPhoto.class);
+                addPhotoIntent.putExtra("x", x);
+                addPhotoIntent.putExtra("y", y);
+                addPhotoIntent.putExtra("path", path);
+                startActivity(addPhotoIntent);
                 finish();
-                Intent intent = new Intent(FetchPhoto.this, FetchPhoto.class);
-                startActivity(intent); //restart the activity with the new photo in the list
             }
         }
     }

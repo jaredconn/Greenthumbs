@@ -35,6 +35,9 @@ public interface DatabaseFunctions {
     @Update
     void updateNote(Note repos);
 
+    @Update
+    void updatePhoto(Photo repos);
+
     @Delete
     void deleteNote(Note note);
 
@@ -46,6 +49,9 @@ public interface DatabaseFunctions {
             "(notes.plant_id=plant.plant_id)" +
             "WHERE notes.plant_id=:plant_id")
     List<Note> getNotesForPlant(final long plant_id);
+
+    @Query("SELECT * FROM photo JOIN plant ON (photo.plant_id=plant.plant_id) WHERE photo.plant_id=:plant_id")
+    List<Photo> getPhotosForPlant(final long plant_id);
 
     @Query("SELECT plant_id from plant WHERE x=:x AND y=:y")
     long getPlantId(int x, int y);

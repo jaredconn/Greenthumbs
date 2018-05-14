@@ -49,6 +49,8 @@
         <activity android:name=".Photos.FetchPhoto"/>
 
         <activity android:name=".AboutActivity"></activity>
+
+        <activity android:name=".Photos.AddPhoto"></activity>
     </application>
 
 </manifest>

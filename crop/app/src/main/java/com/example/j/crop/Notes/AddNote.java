@@ -61,7 +61,7 @@ public class AddNote extends AppCompatActivity {
 
         if(watered == 1){
             Date currentTime = Calendar.getInstance().getTime();
-            note = new Note(currentTime.toString(), "plant been watered");
+            note = new Note(currentTime.toString(), "plant watered");
             new InsertTask(AddNote.this, note).execute();
             watered = 0;
             finish();
@@ -115,6 +115,8 @@ public class AddNote extends AppCompatActivity {
     private void setResult(Note note, int flag){
         setResult(flag,new Intent().putExtra("note",note));
         finish();
+
+
     }
 
     static class InsertTask extends AsyncTask<Void, Void, Boolean> {

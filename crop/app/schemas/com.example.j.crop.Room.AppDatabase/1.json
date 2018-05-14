@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "acd58238811723890916b6e510558c28",
+    "identityHash": "d8a20249f22db2f54c5fd0acc7e4715d",
     "entities": [
       {
         "tableName": "plant",
@@ -100,17 +100,29 @@
       },
       {
         "tableName": "photo",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Photo` TEXT, `plant_id` INTEGER NOT NULL, `photo_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`path` TEXT, `plant_id` INTEGER NOT NULL, `x` INTEGER NOT NULL, `y` INTEGER NOT NULL, `photo_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
         "fields": [
           {
             "fieldPath": "path",
-            "columnName": "Photo",
+            "columnName": "path",
             "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "plant_id",
             "columnName": "plant_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "x",
+            "columnName": "x",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "y",
+            "columnName": "y",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -133,7 +145,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"acd58238811723890916b6e510558c28\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"d8a20249f22db2f54c5fd0acc7e4715d\")"
     ]
   }
 }
